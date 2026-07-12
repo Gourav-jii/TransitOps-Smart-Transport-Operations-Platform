@@ -3,13 +3,8 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTheme } from "@/context/ThemeContext"
 import { useAuth, type UserRole } from "@/context/AuthContext"
-<<<<<<< HEAD
-import notificationService from "@/services/notificationService"
-=======
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import notificationService from "@/services/notificationService"
 import { toast } from "sonner"
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884
 import { Button } from "@/components/ui/Button"
 import {
   LayoutGrid,
@@ -47,7 +42,6 @@ export default function AppLayout() {
   const { user, logout } = useAuth()
   const location = useLocation()
   const queryClient = useQueryClient()
-<<<<<<< HEAD
 
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -63,9 +57,17 @@ export default function AppLayout() {
 
   // Mutations
   const markReadMutation = useMutation({
-    mutationFn: (id?: string) => notificationService.markAsRead(id),
+    mutationFn: (id: string) => notificationService.markAsRead(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] })
+    },
+  })
+
+  const markAllReadMutation = useMutation({
+    mutationFn: () => notificationService.markAllAsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      toast.success("All notifications marked as read")
     },
   })
 
@@ -73,17 +75,27 @@ export default function AppLayout() {
     mutationFn: (id: string) => notificationService.deleteNotification(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      toast.success("Notification deleted")
+    },
+  })
+
+  const scanMutation = useMutation({
+    mutationFn: () => notificationService.triggerComplianceScan(),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      toast.success("Compliance scan complete", {
+        description: res.message || `${res.data?.newCount || 0} alerts discovered.`,
+      })
+    },
+    onError: (err: any) => {
+      toast.error("Scan failed", {
+        description: err.message || "Failed to trigger automated operations audit.",
+      })
     },
   })
 
   const notifications = notifData?.data || []
   const unreadCount = notifications.filter((n) => !n.isRead).length
-=======
-  
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
-  const [isNotifOpen, setIsNotifOpen] = useState(false)
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884
 
   // Sidebar navigation configuration with role boundaries
   const navItems: NavItem[] = [
@@ -114,7 +126,7 @@ export default function AppLayout() {
       name: "Maintenance",
       path: "/maintenance",
       icon: Wrench,
-      roles: ["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"],
+      roles: ["Fleet Manager"],
     },
     {
       name: "Fuel Logs",
@@ -141,56 +153,6 @@ export default function AppLayout() {
       roles: ["Fleet Manager"],
     },
   ]
-
-  // React Query: Fetch notifications feed
-  const { data: notifData } = useQuery({
-    queryKey: ["notifications"],
-    queryFn: () => notificationService.getNotifications(),
-    refetchInterval: 30000, // Poll alerts database every 30s
-    enabled: !!user,
-  })
-
-  const notifications = notifData?.data?.notifications || []
-  const unreadCount = notifData?.data?.unreadCount || 0
-
-  // React Query: Mark single notification as read
-  const markReadMutation = useMutation({
-    mutationFn: (id: string) => notificationService.markAsRead(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] })
-    },
-  })
-
-  // React Query: Mark all unread notifications as read
-  const markAllReadMutation = useMutation({
-    mutationFn: () => notificationService.markAllAsRead(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] })
-      toast.success("All notifications marked as read")
-    },
-  })
-
-  // React Query: Trigger compliance scan manually
-  const scanMutation = useMutation({
-    mutationFn: () => notificationService.triggerComplianceScan(),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] })
-      if (res.data.newCount > 0) {
-        toast.success("Compliance Scan Complete", {
-          description: `${res.data.newCount} new warning alerts generated.`,
-        })
-      } else {
-        toast.info("Compliance Scan Complete", {
-          description: "No new warnings or overdue logs found.",
-        })
-      }
-    },
-    onError: (err: any) => {
-      toast.error("Compliance Scan Error", {
-        description: err.response?.data?.message || "Failed to trigger scan.",
-      })
-    },
-  })
 
   // Filter items matching current user's role
   const visibleNavItems = navItems.filter(
@@ -278,20 +240,20 @@ export default function AppLayout() {
               </div>
             )}
             {!isCollapsed && (
-              <div>
-                <p className="text-xs font-semibold text-foreground leading-tight text-left">{user?.name}</p>
-                <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 text-left">{user?.role}</p>
+              <div className="truncate text-left flex-1 min-w-0">
+                <p className="text-xs font-semibold truncate text-foreground">{user?.name}</p>
+                <p className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">{user?.role}</p>
               </div>
             )}
           </Link>
           <Button
             variant="ghost"
             onClick={handleLogout}
-            className={`w-full flex items-center gap-3 text-destructive hover:bg-destructive/10 hover:text-destructive ${
-              isCollapsed ? "justify-center px-0" : "justify-start px-3"
+            className={`w-full flex items-center gap-3 justify-start text-destructive hover:bg-destructive/10 hover:text-destructive px-3 ${
+              isCollapsed ? "h-10 w-10 p-0 justify-center" : ""
             }`}
           >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="h-5 w-5 flex-shrink-0" />
             {!isCollapsed && <span>Logout</span>}
           </Button>
         </div>
@@ -361,8 +323,8 @@ export default function AppLayout() {
               </div>
             )}
             <div>
-              <p className="text-xs font-semibold text-foreground leading-tight text-left">{user?.name}</p>
-              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 text-left">{user?.role}</p>
+              <p className="text-xs font-semibold text-foreground leading-tight">{user?.name}</p>
+              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{user?.role}</p>
             </div>
           </Link>
           <Button
@@ -406,7 +368,6 @@ export default function AppLayout() {
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
 
-<<<<<<< HEAD
             {/* Notification Bell with Badge */}
             <Button
               variant="ghost"
@@ -421,98 +382,6 @@ export default function AppLayout() {
                 </span>
               )}
             </Button>
-=======
-            {/* Notification Dropdown Container */}
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsNotifOpen(!isNotifOpen)}
-                className="relative text-muted-foreground hover:text-foreground"
-              >
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-[9px] flex items-center justify-center font-bold">
-                    {unreadCount}
-                  </span>
-                )}
-              </Button>
-
-              {isNotifOpen && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setIsNotifOpen(false)} />
-                  
-                  <div className="absolute right-0 mt-2 w-80 bg-card border border-border shadow-xl z-40 py-2 rounded-2xl text-left scale-100 transition-all duration-200">
-                    <div className="px-4 py-2 border-b border-border/40 flex items-center justify-between select-none">
-                      <span className="font-bold text-xs text-foreground uppercase tracking-wider">Compliance Alerts</span>
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={() => {
-                            markAllReadMutation.mutate()
-                            setIsNotifOpen(false)
-                          }}
-                          className="text-[10px] font-bold text-primary hover:underline"
-                        >
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="max-h-64 overflow-y-auto divide-y divide-border/30">
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-xs text-muted-foreground leading-normal">
-                          No compliance flags or active maintenance logs reported.
-                        </div>
-                      ) : (
-                        notifications.map((notif: any) => (
-                          <div
-                            key={notif._id}
-                            onClick={() => {
-                              if (!notif.isRead) markReadMutation.mutate(notif._id)
-                              setIsNotifOpen(false)
-                            }}
-                            className={`p-3 text-xs leading-normal hover:bg-secondary/40 transition-colors cursor-pointer ${
-                              !notif.isRead ? "bg-primary/5 font-semibold text-foreground" : "text-muted-foreground"
-                            }`}
-                          >
-                            <div className="flex justify-between items-start gap-2">
-                              <span className={`font-bold ${!notif.isRead ? "text-primary" : "text-muted-foreground"}`}>
-                                {notif.title}
-                              </span>
-                              {!notif.isRead && (
-                                <span className="h-1.5 w-1.5 bg-primary rounded-full flex-shrink-0 mt-1" />
-                              )}
-                            </div>
-                            <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">{notif.message}</p>
-                            <span className="text-[9px] text-muted-foreground/60 mt-1 block">
-                              {new Date(notif.createdAt).toLocaleDateString()} &bull; {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            </span>
-                          </div>
-                        ))
-                      )}
-                    </div>
-
-                    {(user?.role === "Fleet Manager" || user?.role === "Safety Officer") && (
-                      <div className="px-3 pt-2 border-t border-border/40">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            scanMutation.mutate()
-                            setIsNotifOpen(false)
-                          }}
-                          disabled={scanMutation.isPending}
-                          className="w-full text-[10px] font-bold h-8"
-                        >
-                          {scanMutation.isPending ? "Auditing records..." : "Trigger Compliance Scan"}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884
 
             {/* --- NOTIFICATION CENTER DRAWER --- */}
             {isNotifOpen && (
@@ -525,7 +394,7 @@ export default function AppLayout() {
                   <div className="flex items-center gap-2">
                     {unreadCount > 0 && (
                       <button
-                        onClick={() => markReadMutation.mutate(undefined)}
+                        onClick={() => markAllReadMutation.mutate()}
                         className="text-[10px] font-bold text-primary hover:underline"
                         title="Mark all as read"
                       >
@@ -558,7 +427,7 @@ export default function AppLayout() {
                       >
                         {/* Alert tag marker */}
                         <div className="mt-0.5">
-                          {n.type === "Alert" || n.type === "Compliance" ? (
+                          {n.type === "Alert" || n.type === "Compliance" || n.type?.includes("Expiring") || n.type?.includes("Overdue") ? (
                             <AlertTriangle className="h-4 w-4 text-red-500" />
                           ) : (
                             <Bell className="h-4 w-4 text-primary" />
@@ -596,6 +465,21 @@ export default function AppLayout() {
                     ))
                   )}
                 </div>
+
+                {/* manual scan button for manager/safety officer */}
+                {(user?.role === "Fleet Manager" || user?.role === "Safety Officer") && (
+                  <div className="p-3 border-t border-border/40 bg-muted/10">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => scanMutation.mutate()}
+                      disabled={scanMutation.isPending}
+                      className="w-full text-xs font-bold h-8"
+                    >
+                      {scanMutation.isPending ? "Auditing records..." : "Trigger Compliance Scan"}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 

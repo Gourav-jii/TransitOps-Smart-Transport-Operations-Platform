@@ -12,8 +12,12 @@ dotenv.config();
 
 const runValidationTests = async () => {
   try {
-    const connString = process.env.MONGODB_URI || 'mongodb://localhost:27017/transitops';
-    console.log(`[Verification] Connecting to database: ${connString.replace(/:([^@:]+)@/, ':****@')}`);
+    const connString = process.env.MONGODB_URI;
+    if (!connString) {
+      console.error('[Verification] Error: MONGODB_URI environment variable is not defined.');
+      process.exit(1);
+    }
+    console.log(`[Verification] Connecting to database...`);
     await mongoose.connect(connString);
     console.log('[Verification] MongoDB Connected.');
 

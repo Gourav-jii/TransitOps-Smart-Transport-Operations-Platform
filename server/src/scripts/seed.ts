@@ -7,9 +7,12 @@ dotenv.config();
 
 const seedDB = async (): Promise<void> => {
   try {
-    const connString = process.env.MONGODB_URI || 'mongodb://localhost:27017/transitops';
-    console.log(`Connecting to database for seeding: ${connString.replace(/:([^@:]+)@/, ':****@')}`);
-    
+    const connString = process.env.MONGODB_URI;
+    if (!connString) {
+      console.error('Error: MONGODB_URI environment variable is not defined.');
+      process.exit(1);
+    }
+    console.log(`Connecting to database for seeding...`);
     await mongoose.connect(connString);
     console.log('Connected to MongoDB.');
 
