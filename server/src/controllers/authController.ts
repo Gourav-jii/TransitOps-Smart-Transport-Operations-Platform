@@ -2,6 +2,7 @@ import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import auditService from '../services/auditService';
 
 /**
  * Generate a JWT token valid for 7 days
@@ -116,6 +117,15 @@ export const login = async (req: AuthRequest, res: Response): Promise<any> => {
     // Update last login timestamp
     user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
+
+    // Log Audit action
+    await auditService.log({
+      user: user._id,
+      module: 'Auth',
+      action: 'Login',
+      entityId: user._id.toString(),
+      entityName: user.name,
+    });
 
     const token = generateToken(user._id.toString());
 
@@ -240,4 +250,56 @@ export const logout = async (req: AuthRequest, res: Response): Promise<any> => {
     success: true,
     message: 'Logged out successfully. Clear client token context.',
   });
+};
+
+/**
+ * @route   PUT /api/v1/auth/update-profile
+ * @desc    Update name and avatar for current user
+ * @access  Private
+ */
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<any> => {
+  try {
+    const { name, avatar } = req.body;
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized',
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (name) user.name = name;
+    if (avatar !== undefined) user.avatar = avatar;
+    await user.save({ validateBeforeSave: false });
+
+    // Log Audit action
+    await auditService.log({
+      user: user._id,
+      module: 'Auth',
+      action: 'Update Profile',
+      entityId: user._id.toString(),
+      entityName: user.name,
+    });
+
+    const userObj = user.toObject();
+    delete (userObj as any).password;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: userObj,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: (error as Error).message || 'Server Error updating profile',
+    });
+  }
 };

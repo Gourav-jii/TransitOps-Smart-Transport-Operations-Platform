@@ -35,8 +35,6 @@ type ReportType =
 
 export default function Reports() {
   const { user } = useAuth()
-  const isDispatcher = user?.role === "Dispatcher"
-  const isOfficer = user?.role === "Safety Officer"
   const isAllowedToExport = user?.role === "Fleet Manager" || user?.role === "Financial Analyst"
 
   // Active Report State
@@ -78,9 +76,9 @@ export default function Reports() {
   }
 
   // React Query: Fetch Report Data
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<any>({
     queryKey: ["reports", activeReport, activeFilters],
-    queryFn: () => {
+    queryFn: async () => {
       switch (activeReport) {
         case "fleet":
           return reportService.getFleetReport(activeFilters)
@@ -100,6 +98,8 @@ export default function Reports() {
           return reportService.getFinancialReport(activeFilters)
         case "roi":
           return reportService.getRoiReport(activeFilters)
+        default:
+          return null
       }
     },
   })
@@ -145,7 +145,7 @@ export default function Reports() {
   ] as const
 
   // Filter out tabs the user doesn't have access to
-  const visibleTabs = reportTabs.filter((tab) => tab.roles.includes(user?.role || ""))
+  const visibleTabs = reportTabs.filter((tab) => tab.roles.includes(user?.role as any))
 
   return (
     <div className="space-y-6">

@@ -2,6 +2,7 @@ import api from './api';
 
 export interface NotificationData {
   _id: string;
+  recipient?: string;
   title: string;
   message: string;
   type: string;
@@ -64,7 +65,19 @@ export const notificationService = {
   triggerComplianceScan: async (): Promise<ScanResponse> => {
     const response = await api.post<ScanResponse>('/notifications/scan');
     return response.data;
+<<<<<<< HEAD
   },
 };
 
 export default notificationService;
+=======
+  }
+
+  async deleteNotification(id: string) {
+    const response = await api.delete<{ success: boolean; message: string }>(`/notifications/delete/${id}`);
+    return response.data;
+  }
+}
+
+export default new NotificationService();
+>>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
