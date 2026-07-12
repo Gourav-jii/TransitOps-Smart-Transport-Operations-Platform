@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import authRouter from './auth';
 
 const router = Router();
 
@@ -13,5 +14,8 @@ router.get('/health', (req: Request, res: Response) => {
     message: 'TransitOps API Running',
   });
 });
+
+// Mount Authentication routes
+router.use('/auth', authRouter);
 
 export default router;

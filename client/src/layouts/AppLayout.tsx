@@ -1,6 +1,7 @@
 import { useState } from "react"
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 import { useTheme } from "@/context/ThemeContext"
+import { useAuth, type UserRole } from "@/context/AuthContext"
 import { Button } from "@/components/ui/Button"
 import {
   LayoutGrid,
@@ -12,7 +13,7 @@ import {
   DollarSign,
   FileText,
   Settings,
-  User,
+  User as UserIcon,
   Menu,
   ChevronLeft,
   ChevronRight,
@@ -22,28 +23,84 @@ import {
   Bell,
 } from "lucide-react"
 
+interface NavItem {
+  name: string
+  path: string
+  icon: React.ComponentType<{ className?: string }>
+  roles?: UserRole[]
+}
+
 export default function AppLayout() {
   const { theme, setTheme } = useTheme()
+  const { user, logout } = useAuth()
   const location = useLocation()
-  const navigate = useNavigate()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  const navItems = [
-    { name: "Dashboard", path: "/dashboard", icon: LayoutGrid },
-    { name: "Vehicles", path: "/vehicles", icon: Truck },
-    { name: "Drivers", path: "/drivers", icon: Users },
-    { name: "Trips", path: "/trips", icon: Route },
-    { name: "Maintenance", path: "/maintenance", icon: Wrench },
-    { name: "Fuel Logs", path: "/fuel-logs", icon: Fuel },
-    { name: "Expenses", path: "/expenses", icon: DollarSign },
-    { name: "Reports", path: "/reports", icon: FileText },
-    { name: "Settings", path: "/settings", icon: Settings },
+  // Sidebar navigation configuration with role boundaries
+  const navItems: NavItem[] = [
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: LayoutGrid,
+    },
+    {
+      name: "Vehicles",
+      path: "/vehicles",
+      icon: Truck,
+      roles: ["Fleet Manager", "Dispatcher"],
+    },
+    {
+      name: "Drivers",
+      path: "/drivers",
+      icon: Users,
+      roles: ["Fleet Manager", "Dispatcher", "Safety Officer"],
+    },
+    {
+      name: "Trips",
+      path: "/trips",
+      icon: Route,
+      roles: ["Fleet Manager", "Dispatcher"],
+    },
+    {
+      name: "Maintenance",
+      path: "/maintenance",
+      icon: Wrench,
+      roles: ["Fleet Manager"],
+    },
+    {
+      name: "Fuel Logs",
+      path: "/fuel-logs",
+      icon: Fuel,
+      roles: ["Fleet Manager", "Financial Analyst"],
+    },
+    {
+      name: "Expenses",
+      path: "/expenses",
+      icon: DollarSign,
+      roles: ["Fleet Manager", "Financial Analyst"],
+    },
+    {
+      name: "Reports",
+      path: "/reports",
+      icon: FileText,
+      roles: ["Fleet Manager", "Safety Officer", "Financial Analyst"],
+    },
+    {
+      name: "Settings",
+      path: "/settings",
+      icon: Settings,
+      roles: ["Fleet Manager"],
+    },
   ]
 
+  // Filter items matching current user's role
+  const visibleNavItems = navItems.filter(
+    (item) => !item.roles || (user && item.roles.includes(user.role))
+  )
+
   const handleLogout = () => {
-    localStorage.removeItem("transitops-mock-token")
-    navigate("/login")
+    logout()
   }
 
   // Find active nav item to display title in Navbar
@@ -74,14 +131,14 @@ export default function AppLayout() {
         {/* Collapsible toggle button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute top-20 -right-3 h-6 w-6 bg-card border border-border/80 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm hover:shadow transition-all"
+          className="absolute top-20 -right-3 h-6 w-6 bg-card border border-border/80 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm hover:shadow transition-all z-10"
         >
           {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
         </button>
 
         {/* Navigation Items */}
         <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon
             const isActive = location.pathname === item.path
             return (
@@ -111,13 +168,21 @@ export default function AppLayout() {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-              <User className="h-4 w-4" />
-            </div>
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="h-8 w-8 rounded-full object-cover flex-shrink-0"
+              />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                <UserIcon className="h-4 w-4" />
+              </div>
+            )}
             {!isCollapsed && (
-              <div className="truncate text-left">
-                <p className="text-xs font-semibold">Admin User</p>
-                <p className="text-[10px] text-muted-foreground">admin@transitops.com</p>
+              <div className="truncate text-left flex-1 min-w-0">
+                <p className="text-xs font-semibold truncate text-foreground">{user?.name}</p>
+                <p className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">{user?.role}</p>
               </div>
             )}
           </Link>
@@ -160,7 +225,7 @@ export default function AppLayout() {
           </Button>
         </div>
         <nav className="flex-1 px-4 py-6 space-y-1">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon
             const isActive = location.pathname === item.path
             return (
@@ -186,12 +251,20 @@ export default function AppLayout() {
             onClick={() => setIsMobileOpen(false)}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground"
           >
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <User className="h-4 w-4" />
-            </div>
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <UserIcon className="h-4 w-4" />
+              </div>
+            )}
             <div>
-              <p className="text-xs font-semibold text-foreground">Admin User</p>
-              <p className="text-[10px]">admin@transitops.com</p>
+              <p className="text-xs font-semibold text-foreground leading-tight">{user?.name}</p>
+              <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{user?.role}</p>
             </div>
           </Link>
           <Button
@@ -247,12 +320,28 @@ export default function AppLayout() {
 
             <div className="h-8 w-px bg-border/60 mx-1" />
 
-            {/* Profile Avatar link */}
+            {/* Profile Avatar link & Role Badge */}
             <Link
               to="/profile"
-              className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:ring-2 hover:ring-primary/20 transition-all"
+              className="flex items-center gap-2.5 hover:opacity-85 transition-opacity pl-1"
             >
-              <User className="h-4.5 w-4.5" />
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="h-8.5 w-8.5 rounded-full object-cover ring-2 ring-primary/20"
+                />
+              ) : (
+                <div className="h-8.5 w-8.5 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <UserIcon className="h-4.5 w-4.5" />
+                </div>
+              )}
+              <div className="hidden lg:flex flex-col text-left">
+                <span className="text-xs font-semibold leading-tight text-foreground/90">{user?.name}</span>
+                <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary w-fit mt-0.5">
+                  {user?.role}
+                </span>
+              </div>
             </Link>
           </div>
         </header>

@@ -7,13 +7,13 @@ const api = axios.create({
   },
 })
 
-// Request Interceptor (useful for attaching JWT auth tokens in Phase 2)
+// Request Interceptor (attaching JWT auth tokens in Phase 2)
 api.interceptors.request.use(
   (config) => {
-    // const token = localStorage.getItem("token")
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
+    const token = localStorage.getItem("transitops-token")
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
     return config
   },
   (error) => {

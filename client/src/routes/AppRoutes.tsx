@@ -1,3 +1,4 @@
+import React from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import AppLayout from "@/layouts/AppLayout"
 import Dashboard from "@/pages/Dashboard"
@@ -13,25 +14,45 @@ import Profile from "@/pages/Profile"
 import Login from "@/pages/Login"
 import Unauthorized from "@/pages/Unauthorized"
 import NotFound from "@/pages/NotFound"
+import { useAuth, type UserRole } from "@/context/AuthContext"
+import { Loading } from "@/components/ui/Loading"
 
-// Mock auth helper
-const isAuthenticated = () => {
-  return localStorage.getItem("transitops-mock-token") === "true"
+interface ProtectedRouteProps {
+  children: React.ReactNode
+  allowedRoles?: UserRole[]
 }
 
-// Protected Route Wrapper
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  if (!isAuthenticated()) {
+// Protected Route Wrapper with Role Guard
+export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  const { isAuthenticated, user, loading } = useAuth()
+
+  if (loading) {
+    return <Loading fullPage label="Verifying credentials..." />
+  }
+
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />
   }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/unauthorized" replace />
+  }
+
   return <>{children}</>
 }
 
-// Public Route Wrapper (redirects to dashboard if already logged in)
+// Public Route Wrapper (redirects authenticated users to dashboard)
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  if (isAuthenticated()) {
+  const { isAuthenticated, loading } = useAuth()
+
+  if (loading) {
+    return <Loading fullPage label="Restoring session..." />
+  }
+
+  if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />
   }
+
   return <>{children}</>
 }
 
@@ -51,7 +72,7 @@ export default function AppRoutes() {
       {/* Root redirection to dashboard */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-      {/* Protected App Routes under AppLayout */}
+      {/* Protected App Layout Wrapper */}
       <Route
         element={
           <ProtectedRoute>
@@ -59,16 +80,91 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       >
+        {/* Pages accessible by any authenticated user */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/vehicles" element={<Vehicles />} />
-        <Route path="/drivers" element={<Drivers />} />
-        <Route path="/trips" element={<Trips />} />
-        <Route path="/maintenance" element={<Maintenance />} />
-        <Route path="/fuel-logs" element={<FuelLogs />} />
-        <Route path="/expenses" element={<Expenses />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profile />} />
+
+        {/* Role-Protected Pages */}
+        
+        {/* Vehicles: Fleet Manager & Dispatcher */}
+        <Route
+          path="/vehicles"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher"]}>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Drivers: Fleet Manager, Dispatcher & Safety Officer */}
+        <Route
+          path="/drivers"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer"]}>
+              <Drivers />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Trips: Fleet Manager & Dispatcher */}
+        <Route
+          path="/trips"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher"]}>
+              <Trips />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Maintenance: Fleet Manager only */}
+        <Route
+          path="/maintenance"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager"]}>
+              <Maintenance />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Fuel Logs: Fleet Manager & Financial Analyst */}
+        <Route
+          path="/fuel-logs"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+              <FuelLogs />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Expenses: Fleet Manager & Financial Analyst */}
+        <Route
+          path="/expenses"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+              <Expenses />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Reports: Fleet Manager, Safety Officer & Financial Analyst */}
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer", "Financial Analyst"]}>
+              <Reports />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Settings: Fleet Manager only */}
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager"]}>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       {/* Error & Fallback Routes */}
