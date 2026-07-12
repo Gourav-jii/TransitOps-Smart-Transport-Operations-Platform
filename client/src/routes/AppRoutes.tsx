@@ -173,11 +173,11 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Reports: Fleet Manager, Safety Officer & Financial Analyst */}
+        {/* Reports: Fleet Manager, Safety Officer, Financial Analyst & Dispatcher */}
         <Route
           path="/reports"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer", "Financial Analyst"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer", "Financial Analyst", "Dispatcher"]}>
               <Reports />
             </ProtectedRoute>
           }

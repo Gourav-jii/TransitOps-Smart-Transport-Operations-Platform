@@ -6,6 +6,8 @@ import tripRouter from './trip';
 import fuelRouter from './fuel';
 import expenseRouter from './expense';
 import analyticsRouter from './analytics';
+import reportRouter from './report';
+import notificationRouter from './notification';
 
 const router = Router();
 
@@ -41,5 +43,11 @@ router.use('/expenses', expenseRouter);
 
 // Mount Analytics routes
 router.use('/analytics', analyticsRouter);
+
+// Mount Reports routes
+router.use('/reports', reportRouter);
+
+// Mount Notifications routes
+router.use('/notifications', notificationRouter);
 
 export default router;

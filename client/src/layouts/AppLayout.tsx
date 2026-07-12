@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useTheme } from "@/context/ThemeContext"
 import { useAuth, type UserRole } from "@/context/AuthContext"
+import notificationService from "@/services/notificationService"
 import { Button } from "@/components/ui/Button"
 import {
   LayoutGrid,
@@ -21,6 +23,10 @@ import {
   Moon,
   LogOut,
   Bell,
+  Check,
+  Trash2,
+  X,
+  AlertTriangle,
 } from "lucide-react"
 
 interface NavItem {
@@ -34,8 +40,37 @@ export default function AppLayout() {
   const { theme, setTheme } = useTheme()
   const { user, logout } = useAuth()
   const location = useLocation()
+  const queryClient = useQueryClient()
+
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [isNotifOpen, setIsNotifOpen] = useState(false)
+
+  // React Query: Fetch notifications with polling
+  const { data: notifData } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => notificationService.getNotifications(),
+    enabled: !!user,
+    refetchInterval: 10000, // Poll every 10 seconds
+  })
+
+  // Mutations
+  const markReadMutation = useMutation({
+    mutationFn: (id?: string) => notificationService.markAsRead(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+    },
+  })
+
+  const deleteNotifMutation = useMutation({
+    mutationFn: (id: string) => notificationService.deleteNotification(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+    },
+  })
+
+  const notifications = notifData?.data || []
+  const unreadCount = notifications.filter((n) => !n.isRead).length
 
   // Sidebar navigation configuration with role boundaries
   const navItems: NavItem[] = [
@@ -72,19 +107,19 @@ export default function AppLayout() {
       name: "Fuel Logs",
       path: "/fuel-logs",
       icon: Fuel,
-      roles: ["Fleet Manager", "Financial Analyst"],
+      roles: ["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"],
     },
     {
       name: "Expenses",
       path: "/expenses",
       icon: DollarSign,
-      roles: ["Fleet Manager", "Financial Analyst"],
+      roles: ["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"],
     },
     {
       name: "Reports",
       path: "/reports",
       icon: FileText,
-      roles: ["Fleet Manager", "Safety Officer", "Financial Analyst"],
+      roles: ["Fleet Manager", "Safety Officer", "Financial Analyst", "Dispatcher"],
     },
     {
       name: "Settings",
@@ -297,7 +332,7 @@ export default function AppLayout() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative">
             {/* Theme toggle */}
             <Button
               variant="ghost"
@@ -308,15 +343,105 @@ export default function AppLayout() {
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
 
-            {/* Notification placeholder */}
+            {/* Notification Bell with Badge */}
             <Button
               variant="ghost"
               size="icon"
+              onClick={() => setIsNotifOpen(!isNotifOpen)}
               className="relative text-muted-foreground hover:text-foreground"
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 bg-destructive rounded-full" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 h-4 w-4 bg-destructive text-[8px] font-bold text-white rounded-full flex items-center justify-center animate-pulse">
+                  {unreadCount}
+                </span>
+              )}
             </Button>
+
+            {/* --- NOTIFICATION CENTER DRAWER --- */}
+            {isNotifOpen && (
+              <div className="absolute right-0 top-12 z-50 w-80 sm:w-96 bg-card border border-border/60 shadow-2xl rounded-2xl overflow-hidden text-left">
+                <div className="p-4 border-b border-border/40 bg-muted/20 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Bell className="h-4.5 w-4.5 text-primary" />
+                    <h3 className="text-sm font-bold text-foreground">Notification Center</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={() => markReadMutation.mutate(undefined)}
+                        className="text-[10px] font-bold text-primary hover:underline"
+                        title="Mark all as read"
+                      >
+                        Read All
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setIsNotifOpen(false)}
+                      className="p-1 rounded-full hover:bg-muted text-muted-foreground"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Notification Items Scroll area */}
+                <div className="max-h-80 overflow-y-auto divide-y divide-border/40">
+                  {notifications.length === 0 ? (
+                    <div className="p-8 text-center text-muted-foreground">
+                      <Bell className="h-8 w-8 mx-auto mb-2 text-muted-foreground/30" />
+                      <p className="text-xs">No notifications yet.</p>
+                    </div>
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n._id}
+                        className={`p-3.5 flex gap-2.5 transition-colors ${
+                          n.isRead ? "opacity-75" : "bg-primary/5 border-l-2 border-primary"
+                        }`}
+                      >
+                        {/* Alert tag marker */}
+                        <div className="mt-0.5">
+                          {n.type === "Alert" || n.type === "Compliance" ? (
+                            <AlertTriangle className="h-4 w-4 text-red-500" />
+                          ) : (
+                            <Bell className="h-4 w-4 text-primary" />
+                          )}
+                        </div>
+                        
+                        <div className="flex-1 space-y-0.5">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-bold text-foreground leading-snug">{n.title}</h4>
+                            <span className="text-[9px] text-muted-foreground">
+                              {new Date(n.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-normal">{n.message}</p>
+                          
+                          {/* Actions */}
+                          <div className="pt-2 flex items-center gap-2">
+                            {!n.isRead && (
+                              <button
+                                onClick={() => markReadMutation.mutate(n._id)}
+                                className="text-[9px] font-bold text-primary flex items-center gap-0.5 hover:underline"
+                              >
+                                <Check className="h-3 w-3" /> Mark as Read
+                              </button>
+                            )}
+                            <button
+                              onClick={() => deleteNotifMutation.mutate(n._id)}
+                              className="text-[9px] font-semibold text-destructive flex items-center gap-0.5 hover:underline ml-auto"
+                            >
+                              <Trash2 className="h-3 w-3" /> Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="h-8 w-px bg-border/60 mx-1" />
 
