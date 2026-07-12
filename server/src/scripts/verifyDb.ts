@@ -112,15 +112,16 @@ const runValidationTests = async () => {
     console.log('\n[Verification] Creating MaintenanceLog, FuelLog, and Expense logs...');
     const maintenance = await MaintenanceLog.create({
       vehicle: vehicle._id,
-      maintenanceType: 'Routine Oil Change',
+      maintenanceType: 'Oil Change',
+      title: 'Routine Oil Change',
       description: 'Scheduled preventative maintenance filter and fluid replacement.',
       vendor: 'Speedy Fleet Care',
-      cost: 189.50,
+      estimatedCost: 189.50,
       startDate: new Date(),
       status: 'Active',
       createdBy: testUser._id,
     });
-    console.log(`✓ MaintenanceLog Created (ID: ${maintenance._id}, Cost: ${maintenance.cost})`);
+    console.log(`✓ MaintenanceLog Created (ID: ${maintenance._id}, Cost: ${maintenance.estimatedCost})`);
 
     const fuelLog = await FuelLog.create({
       vehicle: vehicle._id,

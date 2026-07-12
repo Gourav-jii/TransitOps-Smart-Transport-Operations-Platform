@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import authRouter from './auth';
 import vehicleRouter from './vehicle';
 import driverRouter from './driver';
+import maintenanceRouter from './maintenance';
+import notificationRouter from './notification';
 
 const router = Router();
 
@@ -25,5 +27,11 @@ router.use('/vehicles', vehicleRouter);
 
 // Mount Driver Management routes
 router.use('/drivers', driverRouter);
+
+// Mount Maintenance Management routes
+router.use('/maintenance', maintenanceRouter);
+
+// Mount Notifications routes
+router.use('/notifications', notificationRouter);
 
 export default router;
