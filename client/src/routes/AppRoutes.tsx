@@ -7,6 +7,7 @@ import VehicleDetails from "@/pages/VehicleDetails"
 import Drivers from "@/pages/Drivers"
 import DriverDetails from "@/pages/DriverDetails"
 import Trips from "@/pages/Trips"
+import TripDetails from "@/pages/TripDetails"
 import Maintenance from "@/pages/Maintenance"
 import MaintenanceDetails from "@/pages/MaintenanceDetails"
 import FuelLogs from "@/pages/FuelLogs"
@@ -125,12 +126,20 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Trips: Fleet Manager & Dispatcher */}
+        {/* Trips: Fleet Manager, Dispatcher, Safety Officer & Financial Analyst */}
         <Route
           path="/trips"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
               <Trips />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trips/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
+              <TripDetails />
             </ProtectedRoute>
           }
         />
@@ -153,21 +162,21 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Fuel Logs: Fleet Manager & Financial Analyst */}
+        {/* Fuel Logs: Fleet Manager, Financial Analyst, Dispatcher & Safety Officer */}
         <Route
           path="/fuel-logs"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"]}>
               <FuelLogs />
             </ProtectedRoute>
           }
         />
 
-        {/* Expenses: Fleet Manager & Financial Analyst */}
+        {/* Expenses: Fleet Manager, Financial Analyst, Dispatcher & Safety Officer */}
         <Route
           path="/expenses"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"]}>
               <Expenses />
             </ProtectedRoute>
           }
