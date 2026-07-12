@@ -8,16 +8,11 @@ import tripRouter from './trip';
 import fuelRouter from './fuel';
 import expenseRouter from './expense';
 import analyticsRouter from './analytics';
-<<<<<<< HEAD
 import dashboardRouter from './dashboard';
-=======
-<<<<<<< HEAD
-import reportRouter from './report';
-import notificationRouter from './notification';
-=======
->>>>>>> 60d5587b97bce7411445fe98b32c22c188af7bcf
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884
->>>>>>> 2dafe8b90dbe150fb337b5ca02cd6822e39da345
+
+import searchRouter from './search';
+import auditRouter from './audit';
+import documentRouter from './document';
 
 const router = Router();
 
@@ -63,10 +58,13 @@ router.use('/analytics', analyticsRouter);
 // Mount Dashboard routes
 router.use('/dashboard', dashboardRouter);
 
-// Mount Reports routes
-router.use('/reports', reportRouter);
+// Mount Search routes
+router.use('/search', searchRouter);
 
-// Mount Notifications routes
-router.use('/notifications', notificationRouter);
+// Mount Audit routes
+router.use('/audit', auditRouter);
+
+// Mount Documents routes
+router.use('/documents', documentRouter);
 
 export default router;

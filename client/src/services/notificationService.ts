@@ -1,18 +1,8 @@
-<<<<<<< HEAD
-import api from "./api"
-
-export interface NotificationData {
-  _id: string;
-  recipient: string;
-  title: string;
-  message: string;
-  type: "Alert" | "System" | "Maintenance" | "Compliance";
-  isRead: boolean;
-=======
 import api from './api';
 
 export interface NotificationData {
   _id: string;
+  recipient?: string;
   title: string;
   message: string;
   type: string;
@@ -28,31 +18,10 @@ export interface NotificationData {
     maintenanceType: string;
     status: string;
   };
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884
   createdAt: string;
   updatedAt: string;
 }
 
-<<<<<<< HEAD
-export const notificationService = {
-  getNotifications: async (): Promise<{ success: boolean; data: NotificationData[] }> => {
-    const res = await api.get<{ success: boolean; data: NotificationData[] }>("/notifications")
-    return res.data
-  },
-
-  markAsRead: async (id?: string): Promise<{ success: boolean; message: string }> => {
-    const res = await api.patch<{ success: boolean; message: string }>("/notifications/read", { id })
-    return res.data
-  },
-
-  deleteNotification: async (id: string): Promise<{ success: boolean; message: string }> => {
-    const res = await api.delete<{ success: boolean; message: string }>(`/notifications/delete/${id}`)
-    return res.data
-  },
-}
-
-export default notificationService
-=======
 export interface NotificationResponse {
   success: boolean;
   message: string;
@@ -100,7 +69,11 @@ class NotificationService {
     const response = await api.post<ScanResponse>('/notifications/scan');
     return response.data;
   }
+
+  async deleteNotification(id: string) {
+    const response = await api.delete<{ success: boolean; message: string }>(`/notifications/delete/${id}`);
+    return response.data;
+  }
 }
 
 export default new NotificationService();
->>>>>>> 93ce67f7e092e4676150731e58922b7c30280884

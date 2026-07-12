@@ -15,6 +15,8 @@ import Expenses from "@/pages/Expenses"
 import Reports from "@/pages/Reports"
 import Settings from "@/pages/Settings"
 import Profile from "@/pages/Profile"
+import AuditLogs from "@/pages/AuditLogs"
+import DocumentCenter from "@/pages/DocumentCenter"
 import Login from "@/pages/Login"
 import Unauthorized from "@/pages/Unauthorized"
 import NotFound from "@/pages/NotFound"
@@ -188,6 +190,26 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer", "Financial Analyst", "Dispatcher"]}>
               <Reports />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Audit Logs: Fleet Manager & Safety Officer */}
+        <Route
+          path="/audit-logs"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer"]}>
+              <AuditLogs />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Documents: Fleet Manager & Safety Officer */}
+        <Route
+          path="/documents"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Safety Officer"]}>
+              <DocumentCenter />
             </ProtectedRoute>
           }
         />
