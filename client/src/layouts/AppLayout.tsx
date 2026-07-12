@@ -106,7 +106,7 @@ export default function AppLayout() {
     { name: "Expenses", path: "/expenses", icon: DollarSign, roles: ["Fleet Manager", "Financial Analyst"] },
     { name: "Audit Logs", path: "/audit-logs", icon: Activity, roles: ["Fleet Manager", "Safety Officer"] },
     { name: "Documents", path: "/documents", icon: FileText, roles: ["Fleet Manager", "Safety Officer"] },
-    { name: "Reports", path: "/reports", icon: FileText, roles: ["Fleet Manager", "Safety Officer", "Financial Analyst"] },
+    { name: "Reports", path: "/reports", icon: FileText, roles: ["Fleet Manager", "Safety Officer", "Financial Analyst", "Dispatcher"] },
     { name: "Settings", path: "/settings", icon: Settings, roles: ["Fleet Manager"] },
   ]
 
@@ -118,16 +118,6 @@ export default function AppLayout() {
     refetchInterval: 15000, // Poll every 15 seconds
   })
 
-<<<<<<< HEAD
-  // Mutations
-  const markReadMutation = useMutation({
-    mutationFn: (id: string) => notificationService.markAsRead(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] })
-    },
-  })
-
-=======
   // React Query: Global Search
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ["globalSearch", debouncedQuery],
@@ -143,7 +133,6 @@ export default function AppLayout() {
     },
   })
 
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   const markAllReadMutation = useMutation({
     mutationFn: () => notificationService.markAllAsRead(),
     onSuccess: () => {
@@ -160,7 +149,6 @@ export default function AppLayout() {
     },
   })
 
-<<<<<<< HEAD
   const scanMutation = useMutation({
     mutationFn: () => notificationService.triggerComplianceScan(),
     onSuccess: (res) => {
@@ -179,70 +167,7 @@ export default function AppLayout() {
   const notifications = notifData?.data || []
   const unreadCount = notifications.filter((n) => !n.isRead).length
 
-  // Sidebar navigation configuration with role boundaries
-  const navItems: NavItem[] = [
-    {
-      name: "Dashboard",
-      path: "/dashboard",
-      icon: LayoutGrid,
-    },
-    {
-      name: "Vehicles",
-      path: "/vehicles",
-      icon: Truck,
-      roles: ["Fleet Manager", "Dispatcher"],
-    },
-    {
-      name: "Drivers",
-      path: "/drivers",
-      icon: Users,
-      roles: ["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"],
-    },
-    {
-      name: "Trips",
-      path: "/trips",
-      icon: Route,
-      roles: ["Fleet Manager", "Dispatcher"],
-    },
-    {
-      name: "Maintenance",
-      path: "/maintenance",
-      icon: Wrench,
-      roles: ["Fleet Manager"],
-    },
-    {
-      name: "Fuel Logs",
-      path: "/fuel-logs",
-      icon: Fuel,
-      roles: ["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"],
-    },
-    {
-      name: "Expenses",
-      path: "/expenses",
-      icon: DollarSign,
-      roles: ["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"],
-    },
-    {
-      name: "Reports",
-      path: "/reports",
-      icon: FileText,
-      roles: ["Fleet Manager", "Safety Officer", "Financial Analyst", "Dispatcher"],
-    },
-    {
-      name: "Settings",
-      path: "/settings",
-      icon: Settings,
-      roles: ["Fleet Manager"],
-    },
-  ]
-
-  // Filter items matching current user's role
-=======
-  const notifications = notifData?.data?.notifications || []
-  const unreadCount = notifData?.data?.unreadCount || 0
-
   // Filter nav items by user role
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   const visibleNavItems = navItems.filter(
     (item) => !item.roles || (user && item.roles.includes(user.role))
   )
@@ -250,7 +175,6 @@ export default function AppLayout() {
   const handleLogout = () => {
     logout()
   }
-
 
   // Save term to search history
   const saveSearchTerm = (term: string) => {
@@ -368,15 +292,9 @@ export default function AppLayout() {
               </div>
             )}
             {!isCollapsed && (
-<<<<<<< HEAD
               <div className="truncate text-left flex-1 min-w-0">
                 <p className="text-xs font-semibold truncate text-foreground">{user?.name}</p>
                 <p className="text-[10px] text-muted-foreground truncate leading-tight mt-0.5">{user?.role}</p>
-=======
-              <div className="text-left">
-                <p className="text-xs font-semibold text-foreground leading-tight">{user?.name}</p>
-                <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{user?.role}</p>
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
               </div>
             )}
           </Link>
@@ -452,11 +370,7 @@ export default function AppLayout() {
                 <UserIcon className="h-4 w-4" />
               </div>
             )}
-<<<<<<< HEAD
-            <div>
-=======
             <div className="text-left">
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
               <p className="text-xs font-semibold text-foreground leading-tight">{user?.name}</p>
               <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{user?.role}</p>
             </div>
@@ -535,109 +449,6 @@ export default function AppLayout() {
                 </span>
               )}
             </Button>
-<<<<<<< HEAD
-
-            {/* --- NOTIFICATION CENTER DRAWER --- */}
-            {isNotifOpen && (
-              <div className="absolute right-0 top-12 z-50 w-80 sm:w-96 bg-card border border-border/60 shadow-2xl rounded-2xl overflow-hidden text-left">
-                <div className="p-4 border-b border-border/40 bg-muted/20 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-4.5 w-4.5 text-primary" />
-                    <h3 className="text-sm font-bold text-foreground">Notification Center</h3>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {unreadCount > 0 && (
-                      <button
-                        onClick={() => markAllReadMutation.mutate()}
-                        className="text-[10px] font-bold text-primary hover:underline"
-                        title="Mark all as read"
-                      >
-                        Read All
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setIsNotifOpen(false)}
-                      className="p-1 rounded-full hover:bg-muted text-muted-foreground"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Notification Items Scroll area */}
-                <div className="max-h-80 overflow-y-auto divide-y divide-border/40">
-                  {notifications.length === 0 ? (
-                    <div className="p-8 text-center text-muted-foreground">
-                      <Bell className="h-8 w-8 mx-auto mb-2 text-muted-foreground/30" />
-                      <p className="text-xs">No notifications yet.</p>
-                    </div>
-                  ) : (
-                    notifications.map((n) => (
-                      <div
-                        key={n._id}
-                        className={`p-3.5 flex gap-2.5 transition-colors ${
-                          n.isRead ? "opacity-75" : "bg-primary/5 border-l-2 border-primary"
-                        }`}
-                      >
-                        {/* Alert tag marker */}
-                        <div className="mt-0.5">
-                          {n.type === "Alert" || n.type === "Compliance" || n.type?.includes("Expiring") || n.type?.includes("Overdue") ? (
-                            <AlertTriangle className="h-4 w-4 text-red-500" />
-                          ) : (
-                            <Bell className="h-4 w-4 text-primary" />
-                          )}
-                        </div>
-                        
-                        <div className="flex-1 space-y-0.5">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-xs font-bold text-foreground leading-snug">{n.title}</h4>
-                            <span className="text-[9px] text-muted-foreground">
-                              {new Date(n.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-normal">{n.message}</p>
-                          
-                          {/* Actions */}
-                          <div className="pt-2 flex items-center gap-2">
-                            {!n.isRead && (
-                              <button
-                                onClick={() => markReadMutation.mutate(n._id)}
-                                className="text-[9px] font-bold text-primary flex items-center gap-0.5 hover:underline"
-                              >
-                                <Check className="h-3 w-3" /> Mark as Read
-                              </button>
-                            )}
-                            <button
-                              onClick={() => deleteNotifMutation.mutate(n._id)}
-                              className="text-[9px] font-semibold text-destructive flex items-center gap-0.5 hover:underline ml-auto"
-                            >
-                              <Trash2 className="h-3 w-3" /> Delete
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                {/* manual scan button for manager/safety officer */}
-                {(user?.role === "Fleet Manager" || user?.role === "Safety Officer") && (
-                  <div className="p-3 border-t border-border/40 bg-muted/10">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => scanMutation.mutate()}
-                      disabled={scanMutation.isPending}
-                      className="w-full text-xs font-bold h-8"
-                    >
-                      {scanMutation.isPending ? "Auditing records..." : "Trigger Compliance Scan"}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-=======
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
 
             <div className="h-8 w-px bg-border/60 mx-1" />
 
@@ -866,6 +677,20 @@ export default function AppLayout() {
                   })
                 )}
               </div>
+
+              {/* manual scan button for manager/safety officer */}
+              {(user?.role === "Fleet Manager" || user?.role === "Safety Officer") && (
+                <div className="p-4 border-t border-border/40 bg-muted/10">
+                  <Button
+                    variant="outline"
+                    className="w-full text-xs font-bold"
+                    onClick={() => scanMutation.mutate()}
+                    disabled={scanMutation.isPending}
+                  >
+                    {scanMutation.isPending ? "Auditing records..." : "Trigger Compliance Scan"}
+                  </Button>
+                </div>
+              )}
 
             </div>
           </div>
