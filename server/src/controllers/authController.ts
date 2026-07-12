@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
 import { AuthRequest } from '../middlewares/authMiddleware';
@@ -300,6 +300,101 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<an
     return res.status(500).json({
       success: false,
       message: (error as Error).message || 'Server Error updating profile',
+    });
+  }
+};
+
+/**
+ * @route   POST /api/v1/auth/forgot-password
+ * @desc    Generate password reset token/code
+ * @access  Public
+ */
+export const forgotPassword = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide an email address' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No account registered with this email' });
+    }
+
+    // Generate a 6-digit verification code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Save to user model
+    user.resetPasswordToken = resetCode;
+    user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+    await user.save({ validateBeforeSave: false });
+
+    // Print to server console for local testing
+    console.log(`[PASSWORD RESET PIN] Email: ${email} | Code: ${resetCode}`);
+
+    // Return response
+    return res.status(200).json({
+      success: true,
+      message: 'Verification PIN sent to your email. Check console logs for local verification.',
+      resetCode: process.env.NODE_ENV !== 'production' ? resetCode : undefined
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: (error as Error).message || 'Server Error generating reset code',
+    });
+  }
+};
+
+/**
+ * @route   POST /api/v1/auth/reset-password
+ * @desc    Reset password using verification PIN code
+ * @access  Public
+ */
+export const resetPassword = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { email, code, newPassword } = req.body;
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Email, code, and new password are required' });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 8 characters long' });
+    }
+
+    const user = await User.findOne({
+      email,
+      resetPasswordToken: code,
+      resetPasswordExpire: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired verification PIN' });
+    }
+
+    // Set new password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    // Log Audit action
+    await auditService.log({
+      user: user._id,
+      module: 'Auth',
+      action: 'Update Password',
+      entityId: user._id.toString(),
+      entityName: user.name,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password reset successful. You can now log in.'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: (error as Error).message || 'Server Error resetting password',
     });
   }
 };
