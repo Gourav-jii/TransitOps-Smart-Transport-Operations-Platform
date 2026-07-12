@@ -100,10 +100,10 @@ async function runTests() {
     
     let token = '';
     if (loginRes.status === 200 && loginRes.data.success) {
-      token = loginRes.data.data.token;
+      token = loginRes.data.token;
       console.log('✓ Authentication successful.');
-      console.log(`  - Logged in User: ${loginRes.data.data.user.name}`);
-      console.log(`  - Role: ${loginRes.data.data.user.role}`);
+      console.log(`  - Logged in User: ${loginRes.data.user.name}`);
+      console.log(`  - Role: ${loginRes.data.user.role}`);
       console.log(`  - Token Length: ${token.length} chars\n`);
     } else {
       throw new Error(`Login failed with status: ${loginRes.status} / ${JSON.stringify(loginRes.data)}`);
@@ -128,7 +128,7 @@ async function runTests() {
 
     if (meRes.status === 200 && meRes.data.success) {
       console.log('✓ Token validation and protected access verified.');
-      console.log(`  - Retrieved payload email: ${meRes.data.data.email}\n`);
+      console.log(`  - Retrieved payload email: ${meRes.data.user.email}\n`);
     } else {
       throw new Error(`Failed to access authenticated me route: ${meRes.status}`);
     }
@@ -137,7 +137,7 @@ async function runTests() {
     console.log('ALL API INTEGRATION & SECURITY TESTS PASSED SUCCESSFULLY');
     console.log('========================================================');
   } catch (error: any) {
-    console.error('\n❌ API verification test failed:', error.message);
+    console.error('\n❌ API verification test failed:', error);
     process.exit(1);
   }
 }

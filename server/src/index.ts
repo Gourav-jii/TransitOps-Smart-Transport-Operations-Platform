@@ -52,4 +52,4 @@ app.listen(PORT, () => {
 
 export default app;
 
-// Hot-reloaded: MongoDB started successfully.
+// Hot-reloaded: MongoDB started successfully. Clean env configured.
