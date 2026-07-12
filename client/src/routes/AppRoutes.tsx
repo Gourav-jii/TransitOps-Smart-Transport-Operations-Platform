@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import AppLayout from "@/layouts/AppLayout"
 import Dashboard from "@/pages/Dashboard"
 import Vehicles from "@/pages/Vehicles"
+import VehicleDetails from "@/pages/VehicleDetails"
 import Drivers from "@/pages/Drivers"
 import Trips from "@/pages/Trips"
 import Maintenance from "@/pages/Maintenance"
@@ -86,12 +87,20 @@ export default function AppRoutes() {
 
         {/* Role-Protected Pages */}
         
-        {/* Vehicles: Fleet Manager & Dispatcher */}
+        {/* Vehicles: Fleet Manager, Dispatcher, Safety Officer & Financial Analyst */}
         <Route
           path="/vehicles"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
               <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vehicles/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
+              <VehicleDetails />
             </ProtectedRoute>
           }
         />
