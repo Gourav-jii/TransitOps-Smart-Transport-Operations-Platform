@@ -13,11 +13,7 @@ export type NotificationType =
   | 'Pollution Certificate Expiring';
 
 export interface INotification extends Document {
-<<<<<<< HEAD
-  recipient: mongoose.Types.ObjectId;
-=======
   recipient?: mongoose.Types.ObjectId;
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   title: string;
   message: string;
   type: NotificationType;
@@ -47,7 +43,6 @@ const NotificationSchema = new Schema<INotification>(
     type: {
       type: String,
       required: [true, 'Notification type is required'],
-<<<<<<< HEAD
       enum: {
         values: [
           'Alert',
@@ -63,20 +58,6 @@ const NotificationSchema = new Schema<INotification>(
         ],
         message: '{VALUE} is not a valid notification type',
       },
-=======
-      enum: [
-        'Alert',
-        'System',
-        'Maintenance',
-        'Compliance',
-        'Maintenance Started',
-        'Maintenance Completed',
-        'Maintenance Overdue',
-        'Insurance Expiring',
-        'Fitness Expiring',
-        'Pollution Certificate Expiring',
-      ],
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
       default: 'System',
     },
     isRead: {

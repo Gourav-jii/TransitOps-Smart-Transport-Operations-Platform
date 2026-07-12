@@ -1,26 +1,9 @@
 import { Response } from 'express';
-<<<<<<< HEAD
 import mongoose from 'mongoose';
-=======
-import { AuthRequest } from '../middlewares/authMiddleware';
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
 import Notification from '../models/Notification';
 import notificationService from '../services/notificationService';
 import { AuthRequest } from '../middlewares/authMiddleware';
 
-<<<<<<< HEAD
-=======
-/**
- * Helper to validate Mongoose ObjectId
- */
-const isValidObjectId = (id: string): boolean => {
-  return mongoose.Types.ObjectId.isValid(id);
-};
-
-/**
- * Helper to format error responses consistently
- */
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
 const sendError = (res: Response, statusCode: number, message: string, errors: any[] = []) => {
   return res.status(statusCode).json({
     success: false,
@@ -31,7 +14,6 @@ const sendError = (res: Response, statusCode: number, message: string, errors: a
 
 /**
  * @route   GET /api/v1/notifications
-<<<<<<< HEAD
  * @desc    Get user's notifications + system notifications
  * @access  Private (All Roles)
  */
@@ -48,20 +30,11 @@ export const getNotifications = async (req: AuthRequest, res: Response): Promise
         { recipient: null },
       ],
     })
-=======
- * @desc    Fetch notifications list and unread count
- * @access  Private (All authenticated roles)
- */
-export const getNotifications = async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    const notifications = await Notification.find()
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
       .sort({ createdAt: -1 })
       .limit(50)
       .populate('vehicle', 'registrationNumber vehicleName')
       .populate('maintenance', 'maintenanceId maintenanceType status');
 
-<<<<<<< HEAD
     return res.status(200).json({
       success: true,
       message: 'Notifications retrieved successfully',
@@ -70,25 +43,10 @@ export const getNotifications = async (req: AuthRequest, res: Response): Promise
   } catch (error) {
     console.error('Fetch Notifications Error:', (error as Error).message);
     return sendError(res, 500, 'Server error fetching notifications', [(error as Error).message]);
-=======
-    const unreadCount = await Notification.countDocuments({ isRead: false });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Notifications fetched successfully',
-      data: {
-        notifications,
-        unreadCount,
-      },
-    });
-  } catch (error) {
-    return sendError(res, 500, (error as Error).message);
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   }
 };
 
 /**
-<<<<<<< HEAD
  * @route   PATCH /api/v1/notifications/read
  * @desc    Mark notifications as read (single if id passed, else all)
  * @access  Private (All Roles)
@@ -137,47 +95,10 @@ export const markAsRead = async (req: AuthRequest, res: Response): Promise<any> 
   } catch (error) {
     console.error('Mark Notifications Read Error:', (error as Error).message);
     return sendError(res, 500, 'Server error updating notifications', [(error as Error).message]);
-=======
- * @route   PATCH /api/v1/notifications/:id/read
- * @desc    Mark a single notification as read
- * @access  Private (All authenticated roles)
- */
-export const markAsRead = async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    const { id } = req.params;
-
-    if (!isValidObjectId(id)) {
-      return sendError(res, 400, 'Invalid notification ID');
-    }
-
-    const notification = await Notification.findByIdAndUpdate(
-      id,
-      { isRead: true },
-      { new: true }
-    );
-
-    if (!notification) {
-      return sendError(res, 404, 'Notification not found');
-    }
-
-    const unreadCount = await Notification.countDocuments({ isRead: false });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Notification marked as read',
-      data: {
-        notification,
-        unreadCount,
-      },
-    });
-  } catch (error) {
-    return sendError(res, 500, (error as Error).message);
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   }
 };
 
 /**
-<<<<<<< HEAD
  * @route   DELETE /api/v1/notifications/delete/:id
  * @desc    Delete notification
  * @access  Private (All Roles)
@@ -208,54 +129,6 @@ export const deleteNotification = async (req: AuthRequest, res: Response): Promi
   } catch (error) {
     console.error('Delete Notification Error:', (error as Error).message);
     return sendError(res, 500, 'Server error deleting notification', [(error as Error).message]);
-=======
- * @route   PATCH /api/v1/notifications/read-all
- * @desc    Mark all notifications as read
- * @access  Private (All authenticated roles)
- */
-export const markAllAsRead = async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    await Notification.updateMany({ isRead: false }, { isRead: true });
-
-    return res.status(200).json({
-      success: true,
-      message: 'All notifications marked as read',
-      data: {
-        unreadCount: 0,
-      },
-    });
-  } catch (error) {
-    return sendError(res, 500, (error as Error).message);
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
-  }
-};
-
-/**
- * @route   DELETE /api/v1/notifications/delete/:id
- * @desc    Delete notification
- * @access  Private (All Roles)
- */
-export const deleteNotification = async (req: AuthRequest, res: Response): Promise<any> => {
-  try {
-    const { id } = req.params;
-
-    if (!isValidObjectId(id)) {
-      return sendError(res, 400, 'Invalid notification ID format');
-    }
-
-    const notification = await Notification.findByIdAndDelete(id);
-
-    if (!notification) {
-      return sendError(res, 404, 'Notification not found');
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Notification deleted successfully',
-      data: null,
-    });
-  } catch (error) {
-    return sendError(res, 500, (error as Error).message);
   }
 };
 
@@ -283,11 +156,7 @@ export const triggerComplianceScan = async (req: AuthRequest, res: Response): Pr
       },
     });
   } catch (error) {
-<<<<<<< HEAD
     console.error('Compliance Scan Error:', (error as Error).message);
     return sendError(res, 500, 'Server error during compliance scan', [(error as Error).message]);
-=======
-    return sendError(res, 500, (error as Error).message);
->>>>>>> 78475bdc11a0bb871ce31494884ec847fed2d7c8
   }
 };
