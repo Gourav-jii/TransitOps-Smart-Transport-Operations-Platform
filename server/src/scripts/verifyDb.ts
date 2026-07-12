@@ -73,10 +73,19 @@ const runValidationTests = async () => {
       contactNumber: '+1 555-9000',
       email: 'galahad@transitops.com',
       safetyScore: 95,
+      experience: 5,
+      region: 'Northeast',
+      emergencyContactName: 'Ginevra',
+      emergencyContactNumber: '+1 555-9001',
       status: 'Available',
       createdBy: testUser._id,
     });
-    console.log(`✓ Driver Created: ${driver.fullName} (ID: ${driver._id})`);
+    console.log(`✓ Driver Created: ${driver.fullName} (ID: ${driver._id}, Employee ID: ${driver.employeeId})`);
+    if (driver.employeeId && /^EMP-\d{6}$/.test(driver.employeeId)) {
+      console.log('✓ Success: Employee ID number format is correct (matches EMP-XXXXXX)');
+    } else {
+      throw new Error(`Failed: Employee ID formatting failed: ${driver.employeeId}`);
+    }
 
     // 4. Create Trip & Verify Auto-Generated Serial Code
     console.log('\n[Verification] Creating Trip and verifying auto-generated serial code...');

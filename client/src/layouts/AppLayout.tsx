@@ -54,7 +54,7 @@ export default function AppLayout() {
       name: "Drivers",
       path: "/drivers",
       icon: Users,
-      roles: ["Fleet Manager", "Dispatcher", "Safety Officer"],
+      roles: ["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"],
     },
     {
       name: "Trips",
