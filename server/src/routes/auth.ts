@@ -6,6 +6,8 @@ import {
   changePassword,
   updateProfile,
   logout,
+  forgotPassword,
+  resetPassword,
 } from '../controllers/authController';
 import { protect } from '../middlewares/authMiddleware';
 
@@ -162,5 +164,8 @@ router.put('/change-password', protect, changePassword);
  *         description: Profile details updated
  */
 router.put('/update-profile', protect, updateProfile);
+
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 export default router;

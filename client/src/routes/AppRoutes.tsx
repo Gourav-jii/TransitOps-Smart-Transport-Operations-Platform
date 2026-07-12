@@ -18,6 +18,8 @@ import Profile from "@/pages/Profile"
 import AuditLogs from "@/pages/AuditLogs"
 import DocumentCenter from "@/pages/DocumentCenter"
 import Login from "@/pages/Login"
+import Register from "@/pages/Register"
+import ForgotPassword from "@/pages/ForgotPassword"
 import Unauthorized from "@/pages/Unauthorized"
 import NotFound from "@/pages/NotFound"
 import { useAuth, type UserRole } from "@/context/AuthContext"
@@ -71,6 +73,22 @@ export default function AppRoutes() {
         element={
           <PublicRoute>
             <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
           </PublicRoute>
         }
       />
