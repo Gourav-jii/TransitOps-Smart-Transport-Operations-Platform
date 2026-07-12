@@ -1,8 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import Counter from './Counter';
 
 export type DriverStatus = 'Available' | 'On Trip' | 'Off Duty' | 'Suspended';
 
 export interface IDriver extends Document {
+  employeeId?: string;
   fullName: string;
   licenseNumber: string;
   licenseCategory: string;
@@ -11,8 +13,12 @@ export interface IDriver extends Document {
   email?: string;
   address?: string;
   emergencyContact?: string;
+  emergencyContactName?: string;
+  emergencyContactNumber?: string;
   joiningDate?: Date;
   safetyScore: number;
+  experience: number;
+  region?: string;
   status: DriverStatus;
   remarks?: string;
   createdBy: mongoose.Types.ObjectId;
@@ -22,6 +28,11 @@ export interface IDriver extends Document {
 
 const DriverSchema = new Schema<IDriver>(
   {
+    employeeId: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
     fullName: {
       type: String,
       required: [true, 'Driver full name is required'],
@@ -65,6 +76,14 @@ const DriverSchema = new Schema<IDriver>(
       type: String,
       trim: true,
     },
+    emergencyContactName: {
+      type: String,
+      trim: true,
+    },
+    emergencyContactNumber: {
+      type: String,
+      trim: true,
+    },
     joiningDate: {
       type: Date,
       default: Date.now,
@@ -74,6 +93,15 @@ const DriverSchema = new Schema<IDriver>(
       min: [0, 'Safety score cannot be negative'],
       max: [100, 'Safety score cannot exceed 100'],
       default: 100,
+    },
+    experience: {
+      type: Number,
+      min: [0, 'Experience cannot be negative'],
+      default: 0,
+    },
+    region: {
+      type: String,
+      trim: true,
     },
     status: {
       type: String,
@@ -99,6 +127,29 @@ const DriverSchema = new Schema<IDriver>(
     optimisticConcurrency: true,
   }
 );
+
+// Pre-save hook to auto-generate unique employee ID (e.g. EMP-000001)
+DriverSchema.pre<IDriver>('save', async function (next) {
+  const driver = this;
+
+  if (!driver.isNew) {
+    return next();
+  }
+
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { modelName: 'Driver' },
+      { $inc: { sequenceValue: 1 } },
+      { new: true, upsert: true }
+    );
+
+    const sequenceString = String(counter.sequenceValue).padStart(6, '0');
+    driver.employeeId = `EMP-${sequenceString}`;
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
 
 // Indexes
 DriverSchema.index({ status: 1 });

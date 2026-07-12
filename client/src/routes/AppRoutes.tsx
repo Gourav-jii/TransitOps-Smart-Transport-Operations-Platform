@@ -5,6 +5,7 @@ import Dashboard from "@/pages/Dashboard"
 import Vehicles from "@/pages/Vehicles"
 import VehicleDetails from "@/pages/VehicleDetails"
 import Drivers from "@/pages/Drivers"
+import DriverDetails from "@/pages/DriverDetails"
 import Trips from "@/pages/Trips"
 import TripDetails from "@/pages/TripDetails"
 import Maintenance from "@/pages/Maintenance"
@@ -106,12 +107,20 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Drivers: Fleet Manager, Dispatcher & Safety Officer */}
+        {/* Drivers: Fleet Manager, Dispatcher, Safety Officer & Financial Analyst */}
         <Route
           path="/drivers"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
               <Drivers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/drivers/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"]}>
+              <DriverDetails />
             </ProtectedRoute>
           }
         />
