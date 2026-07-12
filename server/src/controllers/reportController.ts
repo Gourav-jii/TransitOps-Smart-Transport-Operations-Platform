@@ -501,6 +501,35 @@ export const exportCSV = async (req: AuthRequest, res: Response): Promise<any> =
     let rows: string[][] = [];
 
     switch (reportType) {
+      case 'fleet': {
+        const summary = await aggregateFleetSummary(req.query);
+        headers = ['Total Vehicles', 'Active Vehicles', 'Total Drivers', 'Completed Trips', 'Total Distance Covered', 'Total Fuel Cost', 'Total Maintenance Cost', 'Total Revenue'];
+        rows = [[
+          String(summary.totalVehicles),
+          String(summary.activeVehicles),
+          String(summary.totalDrivers),
+          String(summary.completedTrips),
+          String(summary.totalDistance),
+          String(summary.totalFuelCost),
+          String(summary.totalMaintenanceCost),
+          String(summary.totalRevenue)
+        ]];
+        break;
+      }
+
+      case 'financial': {
+        const fin = await aggregateFinancialReport(req.query);
+        headers = ['Total Revenue', 'Total Fuel Cost', 'Total Maintenance Cost', 'Other Overhead Expenses', 'Net Profit'];
+        rows = [[
+          String(fin.revenue),
+          String(fin.fuelCost),
+          String(fin.maintenanceCost),
+          String(fin.otherExpenses),
+          String(fin.netProfit)
+        ]];
+        break;
+      }
+
       case 'vehicles':
         data = await aggregateVehiclesReport(req.query);
         headers = ['Vehicle ID', 'Name', 'Type', 'Region', 'Status', 'Trips Completed', 'Distance Covered (km)', 'Fuel Cost ($)', 'Maintenance Cost ($)', 'Total Expense ($)', 'ROI (%)'];
@@ -635,6 +664,37 @@ export const exportPDF = async (req: AuthRequest, res: Response): Promise<any> =
     let rows: string[][] = [];
 
     switch (reportType) {
+      case 'fleet': {
+        const summary = await aggregateFleetSummary(req.query);
+        reportTitle = 'Fleet Operations Summary Report';
+        tableHeaders = ['Metric Description', 'Logged Value'];
+        rows = [
+          ['Total Fleet Vehicles', String(summary.totalVehicles)],
+          ['Active Working Vehicles', String(summary.activeVehicles)],
+          ['Registered Fleet Drivers', String(summary.totalDrivers)],
+          ['Total Completed Trips', String(summary.completedTrips)],
+          ['Total Logged Distance', `${summary.totalDistance.toLocaleString()} km`],
+          ['Fuel OPEX Expenses', `$${summary.totalFuelCost.toLocaleString()}`],
+          ['Maintenance Repairs Expenses', `$${summary.totalMaintenanceCost.toLocaleString()}`],
+          ['Total Settled Revenue', `$${summary.totalRevenue.toLocaleString()}`]
+        ];
+        break;
+      }
+
+      case 'financial': {
+        const fin = await aggregateFinancialReport(req.query);
+        reportTitle = 'Fleet Financial Performance Report';
+        tableHeaders = ['Overhead Category', 'Logged Amount'];
+        rows = [
+          ['Total Earned Revenue', `$${fin.revenue.toLocaleString()}`],
+          ['Fuel Overhead Expenses', `$${fin.fuelCost.toLocaleString()}`],
+          ['Maintenance Repairs Expenses', `$${fin.maintenanceCost.toLocaleString()}`],
+          ['Other Overhead Expenses', `$${fin.otherExpenses.toLocaleString()}`],
+          ['Net Operational Profit', `$${fin.netProfit.toLocaleString()}`]
+        ];
+        break;
+      }
+
       case 'vehicles':
         data = await aggregateVehiclesReport(req.query);
         reportTitle = 'Vehicles Operational Report';
