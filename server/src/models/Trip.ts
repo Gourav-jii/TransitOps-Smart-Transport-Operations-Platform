@@ -15,13 +15,22 @@ export interface ITrip extends Document {
   plannedStartDate: Date;
   actualStartDate?: Date;
   completedDate?: Date;
+  expectedCompletionDate?: Date;
   fuelConsumed?: number;
   startingOdometer: number;
   endingOdometer?: number;
   revenue?: number;
+  estimatedRevenue?: number;
   status: TripStatus;
   remarks?: string;
   createdBy: mongoose.Types.ObjectId;
+  updatedBy?: mongoose.Types.ObjectId;
+  dispatchedBy?: mongoose.Types.ObjectId;
+  dispatchedAt?: Date;
+  completedBy?: mongoose.Types.ObjectId;
+  cancelledBy?: mongoose.Types.ObjectId;
+  cancelledAt?: Date;
+  cancellationReason?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -76,6 +85,9 @@ const TripSchema = new Schema<ITrip>(
     completedDate: {
       type: Date,
     },
+    expectedCompletionDate: {
+      type: Date,
+    },
     fuelConsumed: {
       type: Number,
       min: [0, 'Fuel consumed cannot be negative'],
@@ -92,6 +104,10 @@ const TripSchema = new Schema<ITrip>(
     revenue: {
       type: Number,
       min: [0, 'Trip revenue cannot be negative'],
+    },
+    estimatedRevenue: {
+      type: Number,
+      min: [0, 'Estimated revenue cannot be negative'],
     },
     status: {
       type: String,
@@ -110,6 +126,32 @@ const TripSchema = new Schema<ITrip>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Creator User ID is required'],
+    },
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    dispatchedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    dispatchedAt: {
+      type: Date,
+    },
+    completedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    cancelledBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    cancelledAt: {
+      type: Date,
+    },
+    cancellationReason: {
+      type: String,
+      trim: true,
     },
   },
   {
