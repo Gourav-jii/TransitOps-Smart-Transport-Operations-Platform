@@ -1,11 +1,11 @@
 import { Router, Request, Response } from 'express';
 import authRouter from './auth';
 import vehicleRouter from './vehicle';
-<<<<<<< HEAD
-import tripRouter from './trip';
-=======
 import driverRouter from './driver';
->>>>>>> 96ec9190a97dbce2d12c1363113eb787c45c7c53
+import tripRouter from './trip';
+import fuelRouter from './fuel';
+import expenseRouter from './expense';
+import analyticsRouter from './analytics';
 
 const router = Router();
 
@@ -27,12 +27,19 @@ router.use('/auth', authRouter);
 // Mount Vehicle Management routes
 router.use('/vehicles', vehicleRouter);
 
-<<<<<<< HEAD
-// Mount Trip Management routes
-router.use('/trips', tripRouter);
-=======
 // Mount Driver Management routes
 router.use('/drivers', driverRouter);
->>>>>>> 96ec9190a97dbce2d12c1363113eb787c45c7c53
+
+// Mount Trip Management routes
+router.use('/trips', tripRouter);
+
+// Mount Fuel Management routes
+router.use('/fuel', fuelRouter);
+
+// Mount Expense Management routes
+router.use('/expenses', expenseRouter);
+
+// Mount Analytics routes
+router.use('/analytics', analyticsRouter);
 
 export default router;

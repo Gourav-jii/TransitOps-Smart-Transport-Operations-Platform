@@ -1,13 +1,25 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import Counter from './Counter';
 
-export type ExpenseType = 'Fuel' | 'Maintenance' | 'Toll' | 'Parking' | 'Repair' | 'Other';
+export type ExpenseType =
+  | 'Fuel'
+  | 'Maintenance'
+  | 'Toll'
+  | 'Parking'
+  | 'Repair'
+  | 'Insurance'
+  | 'Tax'
+  | 'Fine'
+  | 'Other';
 
 export interface IExpense extends Document {
+  expenseId: string;
   vehicle?: mongoose.Types.ObjectId;
   trip?: mongoose.Types.ObjectId;
   expenseType: ExpenseType;
   amount: number;
   expenseDate: Date;
+  vendor: string;
   description: string;
   receiptNumber?: string;
   remarks?: string;
@@ -18,6 +30,11 @@ export interface IExpense extends Document {
 
 const ExpenseSchema = new Schema<IExpense>(
   {
+    expenseId: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
     vehicle: {
       type: Schema.Types.ObjectId,
       ref: 'Vehicle',
@@ -30,7 +47,17 @@ const ExpenseSchema = new Schema<IExpense>(
       type: String,
       required: [true, 'Expense category type is required'],
       enum: {
-        values: ['Fuel', 'Maintenance', 'Toll', 'Parking', 'Repair', 'Other'],
+        values: [
+          'Fuel',
+          'Maintenance',
+          'Toll',
+          'Parking',
+          'Repair',
+          'Insurance',
+          'Tax',
+          'Fine',
+          'Other',
+        ],
         message: '{VALUE} is not a valid expense type',
       },
     },
@@ -43,6 +70,11 @@ const ExpenseSchema = new Schema<IExpense>(
       type: Date,
       required: [true, 'Expense occurrence date is required'],
       default: Date.now,
+    },
+    vendor: {
+      type: String,
+      required: [true, 'Expense vendor is required'],
+      trim: true,
     },
     description: {
       type: String,
@@ -68,6 +100,29 @@ const ExpenseSchema = new Schema<IExpense>(
     optimisticConcurrency: true,
   }
 );
+
+// Pre-save hook to generate unique Expense ID
+ExpenseSchema.pre<IExpense>('save', async function (next) {
+  const expense = this;
+
+  if (!expense.isNew) {
+    return next();
+  }
+
+  try {
+    const counter = await Counter.findOneAndUpdate(
+      { modelName: 'Expense' },
+      { $inc: { sequenceValue: 1 } },
+      { new: true, upsert: true }
+    );
+
+    const sequenceString = String(counter.sequenceValue).padStart(6, '0');
+    expense.expenseId = `EXP-${sequenceString}`;
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
 
 // Indexes
 ExpenseSchema.index({ vehicle: 1 });

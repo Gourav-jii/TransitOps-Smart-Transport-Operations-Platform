@@ -153,21 +153,21 @@ export default function AppRoutes() {
           }
         />
 
-        {/* Fuel Logs: Fleet Manager & Financial Analyst */}
+        {/* Fuel Logs: Fleet Manager, Financial Analyst, Dispatcher & Safety Officer */}
         <Route
           path="/fuel-logs"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"]}>
               <FuelLogs />
             </ProtectedRoute>
           }
         />
 
-        {/* Expenses: Fleet Manager & Financial Analyst */}
+        {/* Expenses: Fleet Manager, Financial Analyst, Dispatcher & Safety Officer */}
         <Route
           path="/expenses"
           element={
-            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst"]}>
+            <ProtectedRoute allowedRoles={["Fleet Manager", "Financial Analyst", "Dispatcher", "Safety Officer"]}>
               <Expenses />
             </ProtectedRoute>
           }
