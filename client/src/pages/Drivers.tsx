@@ -444,12 +444,12 @@ export default function Drivers() {
       {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Drivers Directory</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Drivers Directory</h1>
           <p className="text-muted-foreground mt-1">Manage personnel registry, compliance monitor, license tracking, and safety scoring.</p>
         </div>
         {isManager && (
           <Button onClick={openAddModal} className="flex items-center gap-2 shadow-lg shadow-primary/20">
-            <Plus className="h-4.5 w-4.5" /> Add Driver Profile
+            <Plus className="h-4 w-4" /> Add Driver Profile
           </Button>
         )}
       </div>
@@ -837,7 +837,7 @@ export default function Drivers() {
                 onClick={closeFormModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1081,7 +1081,7 @@ export default function Drivers() {
                 onClick={closeSafetyModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1186,3 +1186,5 @@ export default function Drivers() {
     </div>
   )
 }
+
+

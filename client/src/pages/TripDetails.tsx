@@ -218,7 +218,7 @@ export default function TripDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="pb-3 border-b border-border/40">
               <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Route className="h-4.5 w-4.5 text-primary" /> Route Telemetry & Specifications
+                <Route className="h-4 w-4 text-primary" /> Route Telemetry & Specifications
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -253,7 +253,7 @@ export default function TripDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="pb-3 border-b border-border/40">
               <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <DollarSign className="h-4.5 w-4.5 text-primary" /> Financial Estimates
+                <DollarSign className="h-4 w-4 text-primary" /> Financial Estimates
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -277,7 +277,7 @@ export default function TripDetails() {
             <Card className="border-border/60 shadow-sm bg-card border-emerald-500/10 dark:border-emerald-500/20">
               <CardHeader className="pb-3 border-b border-border/40 bg-emerald-500/5">
                 <CardTitle className="text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 flex items-center gap-2">
-                  <CheckCircle className="h-4.5 w-4.5" /> Route Completion Log Metrics
+                  <CheckCircle className="h-4 w-4" /> Route Completion Log Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -337,7 +337,7 @@ export default function TripDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="pb-3 border-b border-border/40">
               <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Truck className="h-4.5 w-4.5 text-primary" /> Assigned Fleet Vehicle
+                <Truck className="h-4 w-4 text-primary" /> Assigned Fleet Vehicle
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 text-sm space-y-3">
@@ -379,7 +379,7 @@ export default function TripDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="pb-3 border-b border-border/40">
               <CardTitle className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <UserIcon className="h-4.5 w-4.5 text-primary" /> Assigned Driver
+                <UserIcon className="h-4 w-4 text-primary" /> Assigned Driver
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 text-sm space-y-3">
@@ -442,3 +442,4 @@ export default function TripDetails() {
     </div>
   )
 }
+

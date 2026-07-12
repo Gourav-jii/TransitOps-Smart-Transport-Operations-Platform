@@ -472,12 +472,12 @@ export default function Trips() {
       {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Trip Dispatch Panel</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Trip Dispatch Panel</h1>
           <p className="text-muted-foreground mt-1">Dispatch routes, track transport lifecycles, and synchronize driver/vehicle availability.</p>
         </div>
         {isDispatcherOrManager && (
           <Button onClick={openAddModal} className="flex items-center gap-2 self-start sm:self-auto shadow-md">
-            <Plus className="h-4.5 w-4.5" /> Book Route / Trip
+            <Plus className="h-4 w-4" /> Book Route / Trip
           </Button>
         )}
       </div>
@@ -841,7 +841,7 @@ export default function Trips() {
                 onClick={closeFormModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1083,7 +1083,7 @@ export default function Trips() {
                 onClick={closeCompleteModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1181,7 +1181,7 @@ export default function Trips() {
                 onClick={closeCancelModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1255,3 +1255,5 @@ export default function Trips() {
     </div>
   )
 }
+
+

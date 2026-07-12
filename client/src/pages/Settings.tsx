@@ -265,7 +265,7 @@ export default function Settings() {
         <div className="space-y-6">
           <Card className="border-border/60 bg-card p-5 space-y-4">
             <h3 className="text-sm font-bold text-foreground/90 flex items-center gap-1.5">
-              <Database className="h-4.5 w-4.5 text-primary" /> TransitOps v1.2 Enterprise
+              <Database className="h-4 w-4 text-primary" /> TransitOps v1.2 Enterprise
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed font-medium">
               Platform preferences and layout configs are stored inside secure browser cookies and localStorage caches to enable fast offline rendering.
@@ -282,3 +282,4 @@ export default function Settings() {
     </div>
   )
 }
+

@@ -105,7 +105,7 @@ export default function AuditLogs() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Audit Logs</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Audit Logs</h1>
           <p className="text-muted-foreground mt-1">
             System security log registry tracking write actions, logins, and session modifications.
           </p>
@@ -168,7 +168,7 @@ export default function AuditLogs() {
                 setStartDate(e.target.value)
                 setPage(1)
               }}
-              className="bg-background border border-border/80 rounded-lg px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30 h-8.5"
+              className="bg-background border border-border/80 rounded-lg px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30 h-8"
             />
           </div>
 
@@ -182,12 +182,12 @@ export default function AuditLogs() {
                 setEndDate(e.target.value)
                 setPage(1)
               }}
-              className="bg-background border border-border/80 rounded-lg px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30 h-8.5"
+              className="bg-background border border-border/80 rounded-lg px-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-primary/30 h-8"
             />
           </div>
 
           {/* Reset button */}
-          <Button variant="outline" size="sm" onClick={handleResetFilters} className="text-xs h-8.5 flex items-center gap-1">
+          <Button variant="outline" size="sm" onClick={handleResetFilters} className="text-xs h-8 flex items-center gap-1">
             <RotateCcw className="h-3.5 w-3.5" /> Reset
           </Button>
         </CardContent>
@@ -347,7 +347,7 @@ export default function AuditLogs() {
                 onClick={() => setSelectedAudit(null)}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -398,3 +398,5 @@ export default function AuditLogs() {
     </div>
   )
 }
+
+

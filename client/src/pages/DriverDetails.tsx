@@ -239,7 +239,7 @@ export default function DriverDetails() {
         {/* Quick Compliance Action Button */}
         {canEditSafety && (
           <Button onClick={openSafetyModal} className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white shadow-lg shadow-amber-500/15">
-            <ShieldAlert className="h-4.5 w-4.5" /> Compliance Checklist
+            <ShieldAlert className="h-4 w-4" /> Compliance Checklist
           </Button>
         )}
       </div>
@@ -280,7 +280,7 @@ export default function DriverDetails() {
                 <div className="border-r border-border/30">
                   <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Safety Score</p>
                   <div className="flex items-center justify-center gap-1 mt-1">
-                    <Award className="h-4.5 w-4.5 text-primary" />
+                    <Award className="h-4 w-4 text-primary" />
                     <span className="font-bold text-sm text-foreground">{driver.safetyScore}/100</span>
                   </div>
                 </div>
@@ -537,7 +537,7 @@ export default function DriverDetails() {
                 onClick={() => setIsSafetyOpen(false)}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -604,3 +604,4 @@ export default function DriverDetails() {
     </div>
   )
 }
+

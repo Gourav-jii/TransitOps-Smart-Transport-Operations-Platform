@@ -196,14 +196,14 @@ export default function DocumentCenter() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Document Center</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Document Center</h1>
           <p className="text-muted-foreground mt-1">
             Store, monitor, and audit validation certificates for vehicles and driver profiles.
           </p>
         </div>
         {(user?.role === "Fleet Manager" || user?.role === "Safety Officer") && (
           <Button onClick={() => setIsAddOpen(true)} className="flex items-center gap-1.5 font-semibold">
-            <Plus className="h-4.5 w-4.5" /> Upload Certificate
+            <Plus className="h-4 w-4" /> Upload Certificate
           </Button>
         )}
       </div>
@@ -580,7 +580,7 @@ export default function DocumentCenter() {
             {/* Header */}
             <div className="p-4 border-b border-border/40 flex items-center justify-between bg-muted/20">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                <FileText className="h-4.5 w-4.5 text-primary" /> Preview: {previewDoc.name}
+                <FileText className="h-4 w-4 text-primary" /> Preview: {previewDoc.name}
               </h3>
               <button
                 onClick={() => setPreviewDoc(null)}
@@ -625,3 +625,5 @@ export default function DocumentCenter() {
     </div>
   )
 }
+
+
