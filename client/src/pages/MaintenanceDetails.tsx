@@ -145,7 +145,7 @@ export default function MaintenanceDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="border-b border-border/40 pb-4">
               <CardTitle className="text-sm font-extrabold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                <Wrench className="h-4.5 w-4.5 text-primary" /> Service Overview
+                <Wrench className="h-4 w-4 text-primary" /> Service Overview
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-5">
@@ -185,7 +185,7 @@ export default function MaintenanceDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="border-b border-border/40 pb-4">
               <CardTitle className="text-sm font-extrabold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                <DollarSign className="h-4.5 w-4.5 text-primary" /> Cost & Billing Analysis
+                <DollarSign className="h-4 w-4 text-primary" /> Cost & Billing Analysis
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
@@ -234,7 +234,7 @@ export default function MaintenanceDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="border-b border-border/40 pb-4">
               <CardTitle className="text-sm font-extrabold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                <Clock className="h-4.5 w-4.5 text-primary" /> Audit History Trail
+                <Clock className="h-4 w-4 text-primary" /> Audit History Trail
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -297,7 +297,7 @@ export default function MaintenanceDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="border-b border-border/40 pb-4">
               <CardTitle className="text-sm font-extrabold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                <Truck className="h-4.5 w-4.5 text-primary" /> Vehicle Registry File
+                <Truck className="h-4 w-4 text-primary" /> Vehicle Registry File
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
@@ -338,7 +338,7 @@ export default function MaintenanceDetails() {
           <Card className="border-border/60 shadow-sm bg-card">
             <CardHeader className="border-b border-border/40 pb-4">
               <CardTitle className="text-sm font-extrabold uppercase text-muted-foreground tracking-wider flex items-center gap-1.5">
-                <Clock className="h-4.5 w-4.5 text-primary" /> Status Progression
+                <Clock className="h-4 w-4 text-primary" /> Status Progression
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
@@ -410,3 +410,4 @@ export default function MaintenanceDetails() {
     </div>
   )
 }
+

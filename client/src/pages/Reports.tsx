@@ -153,7 +153,7 @@ export default function Reports() {
       {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Reports & Analytics Exporter</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Reports & Analytics Exporter</h1>
           <p className="text-muted-foreground mt-1">Generate fleet operational summaries, track ROI metrics, and download CSV/PDF logs.</p>
         </div>
         {isAllowedToExport && (
@@ -177,7 +177,7 @@ export default function Reports() {
             <CardHeader className="pb-2.5 border-b border-border/40 bg-muted/10">
               <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Select Report Type</CardTitle>
             </CardHeader>
-            <CardContent className="p-2 space-y-1">
+            <CardContent className="p-2 flex flex-row overflow-x-auto lg:flex-col gap-1 md:gap-1.5 scrollbar-thin">
               {visibleTabs.map((tab) => {
                 const Icon = tab.icon
                 const isActive = activeReport === tab.id
@@ -185,7 +185,7 @@ export default function Reports() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveReport(tab.id as ReportType)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all text-left ${
+                    className={`w-auto lg:w-full flex-shrink-0 whitespace-nowrap flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all text-left ${
                       isActive
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -581,3 +581,4 @@ function PercentIcon(props: any) {
     </svg>
   )
 }
+

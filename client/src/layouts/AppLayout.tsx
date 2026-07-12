@@ -390,7 +390,7 @@ export default function AppLayout() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         
         {/* STICKY NAVBAR */}
-        <header className="sticky top-0 z-30 h-16 bg-card/85 backdrop-blur-md border-b border-border/40 flex items-center justify-between px-6">
+        <header className="sticky top-0 z-30 h-16 bg-card/85 backdrop-blur-md border-b border-border/40 flex items-center justify-between px-3 sm:px-6">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMobileOpen(true)}>
               <Menu className="h-5 w-5" />
@@ -455,10 +455,10 @@ export default function AppLayout() {
             {/* Profile Link */}
             <Link to="/profile" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity pl-1">
               {user?.avatar ? (
-                <img src={user.avatar} alt={user.name} className="h-8.5 w-8.5 rounded-full object-cover ring-2 ring-primary/20" />
+                <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/20" />
               ) : (
-                <div className="h-8.5 w-8.5 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                  <UserIcon className="h-4.5 w-4.5" />
+                <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <UserIcon className="h-4 w-4" />
                 </div>
               )}
               <div className="hidden lg:flex flex-col text-left font-sans">
@@ -697,10 +697,11 @@ export default function AppLayout() {
         )}
 
         {/* CONTENT AREA */}
-        <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-7xl w-full mx-auto overflow-x-hidden">
           <Outlet />
         </main>
       </div>
     </div>
   )
 }
+

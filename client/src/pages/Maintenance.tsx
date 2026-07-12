@@ -441,14 +441,14 @@ export default function Maintenance() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Maintenance Logs</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground/90">Maintenance Logs</h1>
           <p className="text-muted-foreground mt-1">
             Schedule fleet repairs, log vendor invoice bills, check cert alerts, and monitor vehicle shop status.
           </p>
         </div>
         {isManager && (
           <Button onClick={openAddModal} className="flex items-center gap-2 shadow-lg shadow-primary/20">
-            <Plus className="h-4.5 w-4.5" /> Log Service Record
+            <Plus className="h-4 w-4" /> Log Service Record
           </Button>
         )}
       </div>
@@ -927,7 +927,7 @@ export default function Maintenance() {
                 onClick={closeFormModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1144,7 +1144,7 @@ export default function Maintenance() {
                 onClick={closeCompleteModal}
                 className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:bg-muted"
               >
-                <X className="h-4.5 w-4.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -1274,3 +1274,5 @@ export default function Maintenance() {
     </div>
   )
 }
+
+

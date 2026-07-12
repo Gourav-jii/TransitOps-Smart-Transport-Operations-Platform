@@ -114,7 +114,7 @@ export default function Dashboard() {
       {/* 1. TOP HEADER & FILTERS */}
       <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground/90">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground/90">
             {user?.role === "Fleet Manager" && "Executive Fleet Operations"}
             {user?.role === "Dispatcher" && "Dispatcher Operations Console"}
             {user?.role === "Safety Officer" && "Safety & Compliance Audit Dashboard"}
@@ -127,14 +127,15 @@ export default function Dashboard() {
         </div>
 
         {/* Global Select Filters */}
-        <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto bg-card/60 p-3 rounded-2xl border border-border/60">
+        <div className="w-full xl:w-auto bg-card/60 p-3 rounded-2xl border border-border/60">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 items-end">
           {/* Region */}
           <div className="flex flex-col gap-0.5">
             <span className="text-[9px] font-extrabold uppercase text-muted-foreground tracking-wider">Region</span>
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="bg-background border border-border/80 rounded-lg px-2 py-1 text-xs focus:outline-none"
+              className="w-full bg-background border border-border/80 rounded-lg px-2 py-1.5 text-xs focus:outline-none"
             >
               <option value="">All Regions</option>
               <option value="North">North</option>
@@ -150,7 +151,7 @@ export default function Dashboard() {
             <select
               value={vehicleType}
               onChange={(e) => setVehicleType(e.target.value)}
-              className="bg-background border border-border/80 rounded-lg px-2 py-1 text-xs focus:outline-none"
+              className="w-full bg-background border border-border/80 rounded-lg px-2 py-1.5 text-xs focus:outline-none"
             >
               <option value="">All Types</option>
               <option value="Truck">Truck</option>
@@ -167,7 +168,7 @@ export default function Dashboard() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="bg-background border border-border/80 rounded-lg px-1.5 py-0.5 text-xs focus:outline-none"
+              className="w-full bg-background border border-border/80 rounded-lg px-1.5 py-1 text-xs focus:outline-none"
             />
           </div>
 
@@ -178,15 +179,15 @@ export default function Dashboard() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="bg-background border border-border/80 rounded-lg px-1.5 py-0.5 text-xs focus:outline-none"
+              className="w-full bg-background border border-border/80 rounded-lg px-1.5 py-1 text-xs focus:outline-none"
             />
           </div>
-
+          </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleResetFilters}
-            className="h-8 text-xs font-bold text-muted-foreground hover:text-foreground self-end"
+            className="mt-2 w-full h-7 text-xs font-bold text-muted-foreground hover:text-foreground"
           >
             Reset
           </Button>
@@ -627,7 +628,7 @@ export default function Dashboard() {
           <Card className="border-border/60 bg-card shadow-sm">
             <CardHeader className="border-b border-border/40 pb-3">
               <CardTitle className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <Zap className="h-4.5 w-4.5 text-primary" /> Operations Shortcuts & Quick Actions
+                <Zap className="h-4 w-4 text-primary" /> Operations Shortcuts & Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
@@ -640,7 +641,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/vehicles")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Add Vehicle</span>
                   </Button>
                 )}
@@ -652,7 +653,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/drivers")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Add Driver</span>
                   </Button>
                 )}
@@ -664,7 +665,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/trips")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Create Trip</span>
                   </Button>
                 )}
@@ -676,7 +677,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/maintenance")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Log Service</span>
                   </Button>
                 )}
@@ -688,7 +689,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/fuel-logs")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Log Fuel</span>
                   </Button>
                 )}
@@ -700,7 +701,7 @@ export default function Dashboard() {
                     className="flex flex-col items-center gap-1.5 h-auto py-3 text-xs border-border/80 hover:bg-primary/5 hover:text-primary transition-all font-semibold"
                     onClick={() => navigate("/expenses")}
                   >
-                    <PlusCircle className="h-5.5 w-5.5" />
+                    <PlusCircle className="h-5 w-5" />
                     <span>Log Expense</span>
                   </Button>
                 )}
@@ -719,7 +720,7 @@ export default function Dashboard() {
               <Card className="border-border/60 bg-card">
                 <CardHeader className="border-b border-border/40 pb-3 flex flex-row items-center justify-between">
                   <CardTitle className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <AlertTriangle className="h-4.5 w-4.5 text-amber-500" /> Compliance Warnings & Expiries
+                    <AlertTriangle className="h-4 w-4 text-amber-500" /> Compliance Warnings & Expiries
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -732,7 +733,7 @@ export default function Dashboard() {
                     
                     {alertData.expiringDrivers.map((d: any, idx: number) => (
                       <div key={`d-${idx}`} className="p-3.5 flex items-start gap-3 hover:bg-muted/10 transition-colors">
-                        <AlertTriangle className="h-4.5 w-4.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-foreground/90">License Expiry Warning: {d.fullName}</p>
                           <p className="text-[10px] text-muted-foreground mt-0.5">
@@ -751,7 +752,7 @@ export default function Dashboard() {
 
                       return (
                         <div key={`v-${idx}`} className="p-3.5 flex items-start gap-3 hover:bg-muted/10 transition-colors">
-                          <AlertTriangle className="h-4.5 w-4.5 text-amber-500 flex-shrink-0 mt-0.5" />
+                          <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
                           <div>
                             <p className="font-bold text-foreground/90">Document Expiry Alert: {v.registrationNumber} ({v.vehicleName})</p>
                             <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
@@ -777,7 +778,7 @@ export default function Dashboard() {
               <Card className="border-border/60 bg-card">
                 <CardHeader className="border-b border-border/40 pb-3">
                   <CardTitle className="text-xs font-extrabold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <ShieldCheck className="h-4.5 w-4.5 text-primary" /> Active Safety & Cost Audit Alerts
+                    <ShieldCheck className="h-4 w-4 text-primary" /> Active Safety & Cost Audit Alerts
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -790,7 +791,7 @@ export default function Dashboard() {
                     {/* Low Safety Score Drivers */}
                     {alertData.lowSafetyDrivers.map((d: any, idx: number) => (
                       <div key={`ls-${idx}`} className="p-3.5 flex items-start gap-3 hover:bg-muted/10 transition-colors">
-                        <AlertTriangle className="h-4.5 w-4.5 text-rose-500 flex-shrink-0 mt-0.5" />
+                        <AlertTriangle className="h-4 w-4 text-rose-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-foreground/90">Critical Safety Warning: {d.fullName}</p>
                           <p className="text-[10px] text-muted-foreground mt-0.5">
@@ -803,7 +804,7 @@ export default function Dashboard() {
                     {/* Vehicles Currently In Shop */}
                     {alertData.vehiclesInShop.map((v: any, idx: number) => (
                       <div key={`vis-${idx}`} className="p-3.5 flex items-start gap-3 hover:bg-muted/10 transition-colors">
-                        <Info className="h-4.5 w-4.5 text-blue-500 flex-shrink-0 mt-0.5" />
+                        <Info className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-bold text-foreground/90">Vehicle Currently in Shop: {v.registrationNumber}</p>
                           <p className="text-[10px] text-muted-foreground mt-0.5">
@@ -1033,3 +1034,4 @@ export default function Dashboard() {
     </div>
   )
 }
+
