@@ -404,19 +404,19 @@ export default function Drivers() {
     if (expiry < today) {
       return {
         label: "Expired",
-        style: "bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200/50",
+        style: "bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-400 border-rose-300 ring-1 ring-rose-500/20 font-bold",
         alert: true,
       }
     } else if (expiry <= thirtyDaysFromNow) {
       return {
         label: "Expiring Soon",
-        style: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200/50",
+        style: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border-amber-300",
         alert: true,
       }
     } else {
       return {
         label: "Active",
-        style: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200/50",
+        style: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-300",
         alert: false,
       }
     }
@@ -426,13 +426,13 @@ export default function Drivers() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Available":
-        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-200/30"
+        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-300"
       case "On Trip":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/30"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-300"
       case "Off Duty":
-        return "bg-slate-100 text-slate-800 dark:bg-slate-800/30 dark:text-slate-400 border border-slate-200/30"
+        return "bg-slate-100 text-slate-800 dark:bg-slate-800/30 dark:text-slate-400 border border-slate-300"
       case "Suspended":
-        return "bg-rose-100 text-rose-800 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200/30"
+        return "bg-rose-100 text-rose-800 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-300"
       default:
         return "bg-slate-100 text-slate-800 dark:bg-slate-800/30 dark:text-slate-400"
     }
@@ -580,13 +580,45 @@ export default function Drivers() {
         </CardContent>
       </Card>
 
-      {/* LOADER / ERROR STATES */}
+      {/* LOADER STATE: RENDER TABLE ROW BLINKING SKELETON */}
       {isLoading && (
-        <Card className="border-border/60 p-12">
-          <Loading size="lg" label="Synchronizing driver directory..." />
+        <Card className="border-border/60 shadow-sm overflow-hidden bg-card">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left border-collapse">
+              <thead className="bg-muted/40 text-muted-foreground text-xs uppercase font-extrabold tracking-wider border-b border-border/40">
+                <tr>
+                  <th className="p-4 font-bold">Employee ID</th>
+                  <th className="p-4">Driver Name</th>
+                  <th className="p-4">License Number</th>
+                  <th className="p-4">Category</th>
+                  <th className="p-4 text-center">Safety Score</th>
+                  <th className="p-4 text-center">Status</th>
+                  <th className="p-4">License Expiry</th>
+                  <th className="p-4 font-bold">Contact</th>
+                  <th className="p-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={idx} className="animate-pulse">
+                    <td className="p-4"><div className="h-4 w-16 bg-muted rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-28 bg-muted rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-20 bg-muted rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-16 bg-muted rounded" /></td>
+                    <td className="p-4 text-center"><div className="h-5 w-12 bg-muted rounded mx-auto" /></td>
+                    <td className="p-4 text-center"><div className="h-5 w-16 bg-muted rounded mx-auto" /></td>
+                    <td className="p-4"><div className="h-5 w-24 bg-muted rounded" /></td>
+                    <td className="p-4"><div className="h-4 w-24 bg-muted rounded" /></td>
+                    <td className="p-4 text-right"><div className="h-6 w-16 bg-muted rounded ml-auto" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
 
+      {/* ERROR STATE */}
       {isError && (
         <Card className="border-destructive/30 bg-destructive/5 p-8 text-center text-destructive">
           <AlertCircle className="h-10 w-10 mx-auto mb-3" />
@@ -814,9 +846,9 @@ export default function Drivers() {
               
               {/* Expired License Warning in Form */}
               {editingDriver && new Date(editingDriver.licenseExpiry) < new Date() && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/25 rounded-lg flex items-start gap-2.5">
-                  <AlertTriangle className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-                  <div className="text-xs text-rose-800 dark:text-rose-300 leading-normal">
+                <div className="p-3 bg-rose-50 border border-rose-300 rounded-lg flex items-start gap-2.5">
+                  <AlertTriangle className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-rose-800 leading-normal">
                     <strong>Expired License Compliance Alert:</strong> This driver's license is expired. By business safety policy, they cannot set status to <strong>Available</strong> until license expiry is updated to a future date.
                   </div>
                 </div>

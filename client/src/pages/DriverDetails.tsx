@@ -25,8 +25,10 @@ import {
   Briefcase,
   X,
   ShieldAlert,
-  Info,
-  FileText
+  FileText,
+  FolderOpen,
+  TrendingUp,
+  AlertCircle
 } from "lucide-react"
 
 // Zod validation schema for Safety Update dialog
@@ -44,7 +46,7 @@ export default function DriverDetails() {
   const queryClient = useQueryClient()
   const { user } = useAuth()
 
-  const [activeTab, setActiveTab] = useState<"profile" | "trips">("profile")
+  const [activeTab, setActiveTab] = useState<"profile" | "trips" | "documents" | "performance" | "incidents">("profile")
   const [isSafetyOpen, setIsSafetyOpen] = useState(false)
 
   // Roles boundary checks
@@ -89,19 +91,45 @@ export default function DriverDetails() {
     resolver: zodResolver(safetyFormSchema),
   })
 
+  // Loading skeleton rendering
   if (isLoading) {
     return (
-      <Card className="border-border/60 p-12">
-        <Loading size="lg" label="Retrieving driver compliance file..." />
-      </Card>
+      <div className="space-y-6 text-left animate-pulse">
+        <div className="h-10 w-48 bg-muted rounded-lg" />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <Card className="border-border/60 p-6 space-y-4">
+            <div className="h-20 w-20 bg-muted rounded-2xl mx-auto" />
+            <div className="h-5 w-32 bg-muted mx-auto rounded" />
+            <div className="h-4 w-24 bg-muted mx-auto rounded" />
+            <div className="h-12 bg-muted rounded" />
+          </Card>
+          <div className="lg:col-span-3 space-y-6">
+            <Card className="border-border/60 p-6 space-y-6">
+              <div className="flex gap-4 border-b border-border pb-2">
+                <div className="h-8 w-24 bg-muted rounded" />
+                <div className="h-8 w-24 bg-muted rounded" />
+              </div>
+              <div className="space-y-3">
+                <div className="h-4 w-1/3 bg-muted rounded" />
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="h-12 bg-muted rounded" />
+                  <div className="h-12 bg-muted rounded" />
+                  <div className="h-12 bg-muted rounded" />
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
     )
   }
 
+  // Error State rendering
   if (isError || !data?.success) {
     return (
       <div className="space-y-4 max-w-lg mx-auto text-center py-12">
         <div className="p-4 bg-destructive/10 text-destructive rounded-2xl border border-destructive/20 w-fit mx-auto">
-          <Info className="h-10 w-10" />
+          <AlertCircle className="h-10 w-10" />
         </div>
         <h2 className="text-xl font-bold">Driver File Not Found</h2>
         <p className="text-muted-foreground text-sm">
@@ -134,21 +162,24 @@ export default function DriverDetails() {
 
     if (expiry < today) {
       return {
-        label: "Expired (Action Required)",
-        style: "bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-400 border-rose-200/50",
+        label: "Expired",
+        style: "bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-400 border-rose-300 ring-2 ring-rose-500/20",
         alert: true,
+        expired: true,
       }
     } else if (expiry <= thirtyDaysFromNow) {
       return {
         label: "Expiring Soon",
-        style: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200/50",
+        style: "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border-amber-300",
         alert: true,
+        expired: false,
       }
     } else {
       return {
         label: "Active & Compliant",
-        style: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200/50",
+        style: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-300",
         alert: false,
+        expired: false,
       }
     }
   }
@@ -157,13 +188,13 @@ export default function DriverDetails() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Available":
-        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-200/30"
+        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-300"
       case "On Trip":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-200/30"
+        return "bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-400 border border-blue-300"
       case "Off Duty":
-        return "bg-slate-100 text-slate-800 dark:bg-slate-800/30 dark:text-slate-400 border border-slate-200/30"
+        return "bg-slate-100 text-slate-800 dark:bg-slate-800/30 dark:text-slate-400 border border-slate-300"
       case "Suspended":
-        return "bg-rose-100 text-rose-800 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200/30"
+        return "bg-rose-100 text-rose-800 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-300"
       default:
         return "bg-slate-100 text-slate-800 dark:bg-slate-800/30"
     }
@@ -213,13 +244,13 @@ export default function DriverDetails() {
         )}
       </div>
 
-      {/* DRIVER STATS AND COMPLIANCE WARNING */}
-      {new Date(driver.licenseExpiry) < new Date() && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/25 rounded-2xl flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-rose-500 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-sm font-bold text-rose-800 dark:text-rose-400">Critical License Expiry Notice</h4>
-            <p className="text-xs text-rose-700 dark:text-rose-300/80 leading-normal mt-0.5">
+      {/* DRIVER STATS AND COMPLIANCE WARNING - HIGHLIGHTED IN RED IF EXPIRED */}
+      {comp.expired && (
+        <div className="p-4 bg-rose-50 border-2 border-rose-500 rounded-2xl flex items-start gap-3 shadow-md">
+          <AlertTriangle className="h-6 w-6 text-rose-600 flex-shrink-0 mt-0.5" />
+          <div className="text-left">
+            <h4 className="text-sm font-bold text-rose-800">Critical License Expiry Notice</h4>
+            <p className="text-xs text-rose-700 leading-normal mt-0.5 font-medium">
               This driver's license expired on {formatDate(driver.licenseExpiry)}. Under standard safety protocol guidelines, the driver has been flagged and is blocked from changing status to <strong>Available</strong> or being dispatched on new trips until license records are verified and updated.
             </p>
           </div>
@@ -231,7 +262,7 @@ export default function DriverDetails() {
         
         {/* LEFT COLUMN: MINI CARD IDENTIFIER */}
         <div className="lg:col-span-1 space-y-6">
-          <Card className="border-border/60 shadow-sm text-center bg-card">
+          <Card className={`border-border/60 shadow-sm text-center bg-card transition-all duration-300 ${comp.expired ? "ring-2 ring-rose-500/30" : ""}`}>
             <CardContent className="pt-6 space-y-4">
               
               {/* Profile Avatar icon */}
@@ -289,26 +320,56 @@ export default function DriverDetails() {
           <Card className="border-border/60 shadow-sm overflow-hidden bg-card">
             
             {/* Tabs Header */}
-            <div className="flex bg-muted/40 border-b border-border/40 px-6">
+            <div className="flex bg-muted/40 border-b border-border/40 px-4 overflow-x-auto select-none no-scrollbar">
               <button
                 onClick={() => setActiveTab("profile")}
-                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all ${
+                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
                   activeTab === "profile"
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <User className="h-4 w-4" /> Personal & Work Profile
+                <User className="h-4 w-4" /> Profile Specs
               </button>
               <button
                 onClick={() => setActiveTab("trips")}
-                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all ${
+                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
                   activeTab === "trips"
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Activity className="h-4 w-4" /> Active Duty Logs
+                <Activity className="h-4 w-4" /> Assigned Trips
+              </button>
+              <button
+                onClick={() => setActiveTab("documents")}
+                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  activeTab === "documents"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <FolderOpen className="h-4 w-4" /> Documents
+              </button>
+              <button
+                onClick={() => setActiveTab("performance")}
+                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  activeTab === "performance"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <TrendingUp className="h-4 w-4" /> Performance
+              </button>
+              <button
+                onClick={() => setActiveTab("incidents")}
+                className={`py-3 px-4 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  activeTab === "incidents"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <AlertTriangle className="h-4 w-4" /> Incidents
               </button>
             </div>
 
@@ -406,15 +467,51 @@ export default function DriverDetails() {
                 </div>
               )}
 
-              {/* Active Duty Logs Placeholder */}
+              {/* FUTURE TAB PLACEHOLDERS */}
               {activeTab === "trips" && (
                 <div className="space-y-4 text-center py-8">
                   <div className="h-12 w-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mx-auto">
                     <Activity className="h-6 w-6" />
                   </div>
                   <div className="space-y-1 max-w-xs mx-auto">
-                    <h4 className="font-bold text-foreground/80 text-sm">No Active Trips Dispatched</h4>
-                    <p className="text-xs text-muted-foreground">This driver is not currently assigned to any dispatched transport runs.</p>
+                    <h4 className="font-bold text-foreground/80 text-sm">Assigned Trips</h4>
+                    <p className="text-xs text-muted-foreground">No active trip assignments logged. Trip functionality is disabled for this module phase.</p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "documents" && (
+                <div className="space-y-4 text-center py-8">
+                  <div className="h-12 w-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mx-auto">
+                    <FolderOpen className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-1 max-w-xs mx-auto">
+                    <h4 className="font-bold text-foreground/80 text-sm">Driver Documents</h4>
+                    <p className="text-xs text-muted-foreground">Verification documents and license scans upload placeholder.</p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "performance" && (
+                <div className="space-y-4 text-center py-8">
+                  <div className="h-12 w-12 bg-primary/5 text-primary rounded-full flex items-center justify-center mx-auto">
+                    <TrendingUp className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-1 max-w-xs mx-auto">
+                    <h4 className="font-bold text-foreground/80 text-sm">Performance Audit</h4>
+                    <p className="text-xs text-muted-foreground">Driver logs, speed rating metrics, and fuel compliance score analytics placeholder.</p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "incidents" && (
+                <div className="space-y-4 text-center py-8">
+                  <div className="h-12 w-12 bg-rose-500/5 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                    <AlertTriangle className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-1 max-w-xs mx-auto">
+                    <h4 className="font-bold text-foreground/80 text-sm">Safety Incidents</h4>
+                    <p className="text-xs text-muted-foreground">Speeding alerts, collision reports, and safety policy violations dashboard placeholder.</p>
                   </div>
                 </div>
               )}
