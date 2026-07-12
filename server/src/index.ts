@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import swaggerUi from 'swagger-ui-express';
+import * as swaggerUi from 'swagger-ui-express';
 import { connectDB } from './config/db';
 import apiRouter from './routes/api';
 import { notFoundMiddleware } from './middlewares/notFoundMiddleware';
