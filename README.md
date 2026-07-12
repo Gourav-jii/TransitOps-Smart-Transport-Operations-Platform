@@ -1,151 +1,164 @@
-# TransitOps – Smart Transport Operations Platform
+# TransitOps - Smart Transport Operations Platform
 
-TransitOps is a modern, enterprise-ready Transport Management System (TMS) designed for logistics companies to manage vehicles, drivers, trips, maintenance, expenses, and analytics. 
+TransitOps is a production-grade Enterprise SaaS fleet management and smart transport operations platform built using the MERN stack (MongoDB, Express, React, Node.js) and TypeScript.
 
-This repository contains the architecture blueprint and initial project setup, establishing a solid, production-ready foundation with pre-configured client and server environments.
-
----
-
-## Tech Stack
-
-### Frontend (Client)
-- **React 19**: Modern components and hooks.
-- **TypeScript**: Complete type safety.
-- **Vite**: Rapid hot module replacement (HMR) and bundling.
-- **Tailwind CSS**: Utility-first CSS styling.
-- **shadcn/ui**: Modern, accessible UI components.
-- **React Router DOM**: Declarative front-end routing.
-- **Axios**: Promised-based HTTP client configuration.
-- **TanStack Query (React Query)**: Caching, sync, and server-state management.
-- **React Hook Form & Zod**: Schema-based form validation.
-- **Lucide React**: Vector icons.
-- **Sonner**: Toast notification manager.
-
-### Backend (Server)
-- **Node.js**: Event-driven runtime.
-- **Express.js**: Fast, unopinionated web framework.
-- **TypeScript**: Strongly-typed server environment.
-- **MongoDB & Mongoose**: Flexible document-oriented database mapping.
-- **dotenv**: Environment variable configuration.
-- **cors**: Cross-Origin Resource Sharing middleware.
-- **nodemon**: Dev-server auto-restart utility.
+It provides real-time operational visibility, auto-dispatch routing, automated document compliance scanner pipelines, visual KPI analytics, command-line search overlays, and role-based access control (RBAC).
 
 ---
 
-## Folder Structure
+## 🏗️ System Architecture
 
+```mermaid
+graph TD
+    subgraph Client [Client Portal - React & Vite]
+        UI[Glassmorphic UI Views]
+        CmdK[Cmd+K Global Search]
+        Center[Document Compliance Center]
+        Query[React Query Client]
+    end
+
+    subgraph Security [Security Middleware Gate]
+        Headers[Helmet Security Headers]
+        Limit[Rate Limiter Middleware]
+        RBAC[JWT auth & Role Guards]
+    end
+
+    subgraph Backend [Backend Server - Express & TS]
+        Router[API V1 Routing]
+        AuthC[Auth Controller]
+        VehC[Vehicle Controller]
+        DocC[Document Controller]
+        AuditS[Audit Logging Service]
+    end
+
+    subgraph Data [Data Tier]
+        Mongo[(MongoDB Database)]
+    end
+
+    UI --> Query
+    Query --> Headers
+    Headers --> Limit
+    Limit --> RBAC
+    RBAC --> Router
+    Router --> AuthC
+    Router --> VehC
+    Router --> DocC
+    VehC --> AuditS
+    DocC --> AuditS
+    AuthC --> Mongo
+    VehC --> Mongo
+    DocC --> Mongo
+    AuditS --> Mongo
 ```
+
+### Components
+1. **Frontend**: Vite-backed React SPA using pure CSS design, Lucide icons, and React Query client caching.
+2. **Backend**: Express.js REST APIs in TypeScript, featuring custom security headers and token-bucket rate limiters.
+3. **Authentication**: JWT authentication with local storage session tracking and Role-Based Access Control (RBAC).
+4. **Database**: MongoDB utilizing indexing on query fields, managed via Mongoose schemas.
+5. **Business Logic**: Document compliance scanning (expirations warnings), automated dispatch triggers, and audit logging.
+6. **Reporting Exporter**: High-throughput PDF and CSV reporting streams.
+
+---
+
+## 📁 Workspace Folder Structure
+
+```text
 TransitOps/
-├── README.md
-├── .gitignore
-├── .env.example
-├── client/
-│   ├── .env.example
-│   ├── .gitignore
-│   ├── components.json
-│   ├── index.html
-│   ├── package.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   ├── tsconfig.json
-│   ├── tsconfig.app.json
-│   ├── tsconfig.node.json
-│   ├── vite.config.ts
-│   └── src/
-│       ├── main.tsx
-│       ├── App.tsx
-│       ├── index.css
-│       ├── assets/
-│       ├── components/
-│       │   └── ui/          (Button, Card, loading etc.)
-│       ├── layouts/         (AppLayout with Sidebar and Navbar)
-│       ├── pages/           (All core view placeholders)
-│       ├── hooks/           (Custom application hooks)
-│       ├── services/        (Axios client configuration)
-│       ├── context/         (ThemeProvider for Dark/Light mode)
-│       ├── types/           (TypeScript definitions)
-│       ├── utils/           (Common helpers)
-│       ├── routes/          (App routes configuration)
-│       └── lib/             (cn helper and styling configurations)
-└── server/
-    ├── .env.example
-    ├── .gitignore
-    ├── package.json
-    ├── tsconfig.json
-    ├── nodemon.json
-    └── src/
-        ├── index.ts
-        ├── config/          (Mongoose DB configuration)
-        ├── controllers/     (Request handlers)
-        ├── middlewares/     (Error management & Route guards)
-        ├── models/          (Mongoose data models)
-        ├── routes/          (Express router definitions)
-        ├── services/        (Business layer execution logic)
-        ├── validators/      (Zod request payload schemas)
-        └── utils/           (Utility scripts)
+├── client/                      # React Frontend SPA
+│   ├── src/
+│   │   ├── components/          # Reusable UI components
+│   │   ├── context/             # Auth & Theme context providers
+│   │   ├── layouts/             # AppLayout, bell center, Cmd+K search
+│   │   ├── pages/               # Dashboard, Audit Logs, Document Center...
+│   │   ├── services/            # Axios API client integrations
+│   │   └── tests/               # Smoke test suites
+│   ├── Dockerfile               # Client production Nginx Dockerfile
+│   └── package.json
+├── server/                      # Express Backend REST API
+│   ├── src/
+│   │   ├── config/              # MongoDB config & Swagger spec setup
+│   │   ├── controllers/         # REST Controllers (Auth, Search, Document...)
+│   │   ├── middlewares/         # JWT verification, RBAC, Rate limiter
+│   │   ├── models/              # Mongoose database schemas
+│   │   ├── routes/              # Express API endpoints
+│   │   └── scripts/             # Database seeding & validation runners
+│   ├── Dockerfile               # Backend production build Dockerfile
+│   └── package.json
+├── docker-compose.yml           # Orchestration setup for multi-containers
+└── README.md                    # System documentation
 ```
 
 ---
 
-## Installation & Setup
+## 🚀 Installation & Local Launch
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- [MongoDB](https://www.mongodb.com/) (Running locally or MongoDB Atlas connection string)
+- Node.js (v18+)
+- MongoDB (running locally on port 27017 or remote Atlas connection string)
+- Docker & Docker Compose (optional, for containerized run)
 
-### 1. Repository Setup
-Clone the repository and copy the environment file placeholders:
+### Step 1: Clone and Configure Environment
+Copy `.env.example` in the server and client subfolders:
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd Smart-Transport-Operations-Platform
-
-# Copy env samples
+# In server/
 cp .env.example .env
-cp client/.env.example client/.env
-cp server/.env.example server/.env
+
+# In client/
+cp .env.example .env
 ```
 
-### 2. Backend Server Installation
-Navigate into the `server` directory and install the dependencies:
+### Step 2: Install dependencies
 ```bash
-cd server
-npm install
+# Root or individual folders
+cd server && npm install
+cd ../client && npm install
 ```
 
-### 3. Frontend Client Installation
-Navigate into the `client` directory and install the dependencies:
+### Step 3: Run Database Seeding
+Initialize the base users and operations data logs:
 ```bash
-cd ../client
-npm install
+# In server directory
+npm run seed       # Creates Arthur, Guinevere, Lancelot, and Merlin
+npm run seed-demo  # Restores operations metrics log
 ```
+
+### Step 4: Run Development Servers
+```bash
+# In client/
+npm run dev
+
+# In server/
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## Running the Application
+## 🐳 Docker Deployment
 
-### Running the Backend Server
-Run the Express backend in development mode (with Hot Reload via `nodemon`):
+To spin up the entire application stack (MongoDB database, Backend service, and Nginx client frontend) automatically:
 ```bash
-cd server
-npm run dev
+docker-compose up --build -d
 ```
-The server will start on [http://localhost:5000](http://localhost:5000). You can check health via:
-[http://localhost:5000/api/v1/health](http://localhost:5000/api/v1/health)
-
-### Running the Frontend Client
-Run the Vite development server:
-```bash
-cd client
-npm run dev
-```
-The client will start on [http://localhost:5173](http://localhost:5173).
+- Frontend will expose at [http://localhost](http://localhost) (port 80).
+- Backend API will listen on [http://localhost:5000](http://localhost:5000).
 
 ---
 
-## Architecture Guidelines
+## 📘 Interactive API Swagger Documentation
+Explore and run tests directly against all REST endpoints using the Swagger OpenAPI playground:
+- Staging/Local Endpoint: [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
+- Interactive features: Trigger user login, test request authentication headers, and fetch database summaries.
 
-- **TypeScript Everywhere**: Keep strict type safety across both applications.
-- **API Versioning**: All endpoints must be prefixed with `/api/v1/`.
-- **Global Error Handling**: Ensure all server-side errors are caught by `errorMiddleware` to avoid server crashes.
-- **Absolute Imports**: Frontend paths use absolute mapping prefixed with `@/` referencing `client/src/`.
+---
+
+## 🧪 Running Verification Tests
+Execute the custom end-to-end testing suites to verify integration:
+```bash
+# In server/
+npm run test-api      # Runs health, Helmet headers, rate-limiting, and auth tests
+
+# In client/
+npm run test-smoke    # Runs entrypoint HTML and core page routes presence check
+```

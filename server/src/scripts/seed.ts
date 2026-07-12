@@ -31,7 +31,7 @@ const seedDB = async (): Promise<void> => {
         email: 'manager@transitops.com',
         password: 'Password@123',
         role: 'Fleet Manager' as const,
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop&q=80',
+        avatar: '',
         isActive: true,
       },
       {
