@@ -9,14 +9,20 @@ import Expense from '../models/Expense';
 import User from '../models/User';
 import Counter from '../models/Counter';
 
-dotenv.config();
+import dns from 'dns';
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/transitops';
+dotenv.config();
 
 async function seed() {
   console.log('Connecting to database for demo dashboard seeding...');
   try {
-    await mongoose.connect(MONGO_URI);
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+    const connString = process.env.MONGODB_URI;
+    if (!connString) {
+      console.error('Error: MONGODB_URI environment variable is not defined.');
+      process.exit(1);
+    }
+    await mongoose.connect(connString);
     console.log('Connected to MongoDB.');
 
     // 1. Clean Collections

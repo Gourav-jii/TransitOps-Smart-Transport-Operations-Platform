@@ -2,11 +2,14 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import User from '../models/User';
 
+import dns from 'dns';
+
 // Load environmental variables
 dotenv.config();
 
 const seedDB = async (): Promise<void> => {
   try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
     const connString = process.env.MONGODB_URI;
     if (!connString) {
       console.error('Error: MONGODB_URI environment variable is not defined.');

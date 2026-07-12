@@ -8,10 +8,13 @@ import MaintenanceLog from '../models/MaintenanceLog';
 import FuelLog from '../models/FuelLog';
 import Expense from '../models/Expense';
 
+import dns from 'dns';
+
 dotenv.config();
 
 const runValidationTests = async () => {
   try {
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
     const connString = process.env.MONGODB_URI;
     if (!connString) {
       console.error('[Verification] Error: MONGODB_URI environment variable is not defined.');
