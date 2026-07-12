@@ -2,15 +2,13 @@ import { Router, Request, Response } from 'express';
 import authRouter from './auth';
 import vehicleRouter from './vehicle';
 import driverRouter from './driver';
-<<<<<<< HEAD
 import maintenanceRouter from './maintenance';
 import notificationRouter from './notification';
-=======
 import tripRouter from './trip';
 import fuelRouter from './fuel';
 import expenseRouter from './expense';
 import analyticsRouter from './analytics';
->>>>>>> 60d5587b97bce7411445fe98b32c22c188af7bcf
+import dashboardRouter from './dashboard';
 
 const router = Router();
 
@@ -35,13 +33,12 @@ router.use('/vehicles', vehicleRouter);
 // Mount Driver Management routes
 router.use('/drivers', driverRouter);
 
-<<<<<<< HEAD
 // Mount Maintenance Management routes
 router.use('/maintenance', maintenanceRouter);
 
 // Mount Notifications routes
 router.use('/notifications', notificationRouter);
-=======
+
 // Mount Trip Management routes
 router.use('/trips', tripRouter);
 
@@ -53,6 +50,8 @@ router.use('/expenses', expenseRouter);
 
 // Mount Analytics routes
 router.use('/analytics', analyticsRouter);
->>>>>>> 60d5587b97bce7411445fe98b32c22c188af7bcf
+
+// Mount Dashboard routes
+router.use('/dashboard', dashboardRouter);
 
 export default router;
